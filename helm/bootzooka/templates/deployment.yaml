@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "athletraai.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "athletraai.name" . }}
+    helm.sh/chart: {{ include "athletraai.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.athletraai.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "athletraai.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "athletraai.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.athletraai.image.repository }}:{{ .Values.athletraai.image.tag }}"
+          imagePullPolicy: {{ .Values.athletraai.image.pullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: {{ include "athletraai.fullname" . }}-config
+          - secretRef:
+              name: {{ include "athletraai.fullname" . }}-secret
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            initialDelaySeconds: {{ .Values.athletraai.liveness_initial_delay }}
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            initialDelaySeconds: {{ .Values.athletraai.readiness_initial_delay }}
+            httpGet:
+              path: /
+              port: http
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

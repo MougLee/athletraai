@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "athletraai.fullname" . }}-config
+data:
+  JAVA_OPTS: "{{ .Values.athletraai.java_opts }}"
+  SMTP_ENABLED: "{{ .Values.athletraai.smtp.enabled }}"
+  SMTP_HOST: "{{ .Values.athletraai.smtp.host }}"
+  SMTP_PORT: "{{ .Values.athletraai.smtp.port }}"
+  SMTP_USERNAME: "{{ .Values.athletraai.smtp.username }}"
+  SMTP_SSL_CONNECTION: "{{ .Values.athletraai.smtp.ssl }}"
+  SMTP_VERIFY_SSL_CERTIFICATE: "{{ .Values.athletraai.smtp.ssl_ver }}"
+  SMTP_FROM: "{{ .Values.athletraai.smtp.from }}"
+  PASSWORD_RESET_LINK_PATTERN: "{{ .Values.athletraai.reset_password_url }}"
+  SQL_USERNAME: "{{ tpl .Values.athletraai.sql.username . }}"
+  SQL_DBNAME: "{{ tpl .Values.athletraai.sql.name . }}"
+  SQL_HOST: "{{ tpl .Values.athletraai.sql.host . }}"
+  SQL_PORT: "{{ tpl .Values.athletraai.sql.port . }}"
+  OTEL_SDK_DISABLED: "{{ not .Values.athletraai.otel.enabled }}"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "{{ .Values.athletraai.otel.endpoint }}"
+  OTEL_EXPORTER_OTLP_PROTOCOL: "{{ .Values.athletraai.otel.protocol }}"
+  OTEL_SERVICE_NAME: "{{ .Values.athletraai.otel.service_name }}"
+  OTEL_METRIC_EXPORT_INTERVAL: "{{ .Values.athletraai.otel.metric_export_interval }}"
+  LOGBACK_JSON_ENCODE: "{{ .Values.athletraai.logback_json_encode }}"

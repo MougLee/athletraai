@@ -1,0 +1,96 @@
+name: Athletraai CI
+
+on:
+  pull_request:
+  push:
+    tags: [v*]
+    branches:
+      - master
+    paths-ignore:
+      - "helm/**"
+  release:
+    types:
+      - released
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check-out repository
+        id: repo-checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: "21"
+          cache: "sbt"
+
+      - uses: sbt/setup-sbt@v1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Generate OpenAPI Spec
+        id: generate-openapi-spec
+        run: sbt "backend/generateOpenAPIDescription"
+
+      - name: Run tests
+        id: run-tests
+        run: sbt test
+
+      - name: Test UI build
+        id: test-ui-build
+        run: yarn build
+        working-directory: ./ui
+
+  publish:
+    needs: [verify]
+    runs-on: ubuntu-24.04
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Check-out repository
+        id: repo-checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: "21"
+          cache: "sbt"
+
+      - uses: sbt/setup-sbt@v1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Generate OpenAPI Spec
+        id: generate-openapi-spec
+        run: sbt "backend/generateOpenAPIDescription"
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Publish docker image
+        run: sbt 'set docker / version := "'${GITHUB_RUN_ID}-${GITHUB_SHA:0:7}'"' docker/docker:publish
+
+  label:
+    # only for PRs by softwaremill-ci
+    if: github.event.pull_request.user.login == 'softwaremill-ci'
+    uses: softwaremill/github-actions-workflows/.github/workflows/label.yml@main
+
+  auto-merge:
+    # only for PRs by softwaremill-ci
+    if: github.event.pull_request.user.login == 'softwaremill-ci'
+    needs: [verify, label]
+    uses: softwaremill/github-actions-workflows/.github/workflows/auto-merge.yml@main

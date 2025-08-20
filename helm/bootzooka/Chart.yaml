@@ -1,0 +1,36 @@
+apiVersion: v2
+appVersion: "1.0"
+description: "A Helm chart for Athletraai"
+name: athletraai
+version: 0.3.0
+type: application
+keywords:
+ - scala
+ - microservice
+ - postgresql
+ - angular
+ - bootstrap
+home: https://softwaremill.github.io/athletraai/
+sources:
+ - https://github.com/softwaremill/athletraai
+maintainers:
+ - name: tomusheq
+   url: https://github.com/tomusheq
+ - name: ideas-into-software
+   url: https://github.com/ideas-into-software
+icon: https://raw.githubusercontent.com/softwaremill/athletraai/master/banner.png
+dependencies:
+ - name: postgresql
+   version: ^16
+   repository: oci://registry-1.docker.io/bitnamicharts
+   condition: postgresql.enabled
+annotations:
+ artifacthub.io/links: |
+  - name: Docs
+    url: https://softwaremill.github.io/athletraai/
+  - name: Source
+    url: https://github.com/softwaremill/athletraai
+  - name: Demo
+    url: https://athletraai.softwaremill.com/
+  - name: Home
+    url: https://softwaremill.com/

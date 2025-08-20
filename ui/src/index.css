@@ -1,0 +1,73 @@
+html,
+body,
+#root {
+  height: 100%;
+}
+
+/* Athletra brand colors */
+:root {
+  --athletra-teal: #00C8C8;
+  --athletra-teal-dark: #00A3A3; /* Slightly darker for hover */
+  --athletra-teal-light: #B2EBF2;
+  --athletra-blue-deep: #00B8D4; /* Not currently used for main elements, but kept */
+  --athletra-green: #8BC34A;
+  --athletra-green-dark: #7BB03D;
+  --athletra-orange: #FFB74D;
+  --athletra-orange-dark: #E6A23D; /* Darker for hover */
+  --color-white: #FFFFFF;
+  --color-gray-dark: #424242;
+  --color-gray-medium: #757575;
+  --color-gray-light: #BDBDBD;
+
+  /* Bootstrap color overrides */
+  --bs-primary: var(--athletra-teal);
+  --bs-primary-rgb: 0, 200, 200;
+  --bs-secondary: var(--athletra-orange);
+  --bs-secondary-rgb: 255, 183, 77;
+  --bs-success: var(--athletra-green);
+  --bs-success-rgb: 139, 195, 74;
+  --bs-info: var(--athletra-blue-deep);
+  --bs-info-rgb: 0, 184, 212;
+  --bs-warning: var(--athletra-orange);
+  --bs-warning-rgb: 255, 183, 77;
+  --bs-danger: #e53935;
+  --bs-danger-rgb: 229, 57, 53;
+  --bs-light: #f8f9fa;
+  --bs-light-rgb: 248, 249, 250;
+  --bs-dark: var(--color-gray-dark);
+  --bs-dark-rgb: 66, 66, 66;
+  --bs-body-color: var(--color-gray-dark);
+  --bs-body-bg: var(--color-white);
+  --bs-link-color: var(--athletra-teal);
+  --bs-link-hover-color: var(--athletra-teal-dark);
+}
+
+/* Brand utilities */
+.bg-brand-teal {
+  background-color: var(--athletra-teal-light);
+  border-bottom: 1px solid var(--athletra-teal);
+  /* Navbar color variables (Bootstrap 5) */
+  --bs-navbar-color: var(--athletra-orange);
+  --bs-navbar-hover-color: var(--athletra-orange-dark);
+  --bs-navbar-active-color: var(--athletra-orange-dark);
+  --bs-navbar-brand-color: var(--athletra-orange);
+  --bs-navbar-brand-hover-color: var(--athletra-orange-dark);
+}
+
+.brand-logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.brand-icon {
+  width: 80px;
+  height: 80px;
+}
+
+.brand-name {
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--athletra-orange);
+}
