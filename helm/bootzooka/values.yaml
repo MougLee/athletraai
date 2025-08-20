@@ -1,0 +1,103 @@
+# Default values for Athletraai.
+
+postgresql:
+  # -- Disable if you already have PostgreSQL running in cluster where Athletraai chart is being deployed
+  enabled: true
+  fullnameOverride: "athletraai-pgsql-postgresql"
+  auth:
+    # -- Username for PostgreSQL user
+    username: "postgres"
+    # -- Password for PostgreSQL user
+    password: "athletraai"  # Change this
+    # -- Database name for Athletraai
+    database: "athletraai"
+  service:
+    port: 5432
+  connectionTest:
+    image:
+      repository: bitnami/postgresql
+      tag: 11
+      pullPolicy: IfNotPresent
+
+athletraai:
+  replicaCount: 1
+  liveness_initial_delay: 60
+  readiness_initial_delay: 60
+  reset_password_url: "https://athletraai.example.com/password-reset?code=%s"
+  sql:
+    # -- Value will be taken from 'postgresql.fullnameOverride' setting
+    host: '{{ .Values.postgresql.fullnameOverride }}'
+    # -- Value will be taken from 'postgresql.service.port' setting
+    port: '{{ .Values.postgresql.service.port }}'
+    # -- Value will be taken from 'postgresql.postgresqlUsername' setting
+    username: '{{ .Values.postgresql.auth.username }}'
+    # -- Value will be taken from 'postgresql.postgresqlDatabase' setting
+    name: '{{ .Values.postgresql.auth.database }}'
+    # -- Value will be taken from 'postgresql.postgresqlPassword' setting
+    password: '{{ .Values.postgresql.auth.password }}'
+  smtp:
+    enabled: true
+    host: "server.example.com"
+    port: 465
+    ssl: "true"
+    ssl_ver: "false"
+    username: "server.example.com"
+    from: "hello@athletraai.example.com"
+    password: "athletraai"
+
+  otel:
+    enabled: false
+    endpoint: ""
+    protocol: ""
+    service_name: "athletraai"
+    metric_export_interval: "60s"
+
+  image:
+    repository: softwaremill/athletraai
+    tag: latest
+    pullPolicy: Always
+
+  java_opts: "-XX:MaxRAMPercentage=60"
+  logback_json_encode: false
+
+  nameOverride: ""
+  fullnameOverride: ""
+
+  service:
+    type: ClusterIP
+    port: 8080
+
+  ingress:
+    enabled: true
+    tls_enabled: false
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "true"
+    hosts:
+      - host:
+          domain: athletraai.example.com
+          path: /
+          pathType: ImplementationSpecific
+          port: http
+    tls:
+      - secretName: athletraai-tls
+        hosts:
+        - athletraai.example.com
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
