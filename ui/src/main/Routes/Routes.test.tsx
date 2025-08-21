@@ -29,7 +29,7 @@ test('<Routes /> should render the main route', () => {
     </MemoryRouter>
   );
 
-  expect(screen.getByText('Welcome to Athletraai!')).toBeInTheDocument();
+  expect(screen.getByText('Welcome to Athletra AI!')).toBeInTheDocument();
 });
 
 test('<Routes /> should render protected route for unlogged user', () => {

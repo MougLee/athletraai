@@ -10,7 +10,7 @@ import { QueryOperation } from "./apiComponents";
 export type ApiContext<
   TQueryFnData = unknown,
   TError = DefaultError,
-  TData = TQueryFnData,
+  // TData = TQueryFnData,
   TQueryKey extends QueryKey = QueryKey,
 > = {
   fetcherOptions: {
@@ -47,7 +47,8 @@ export function useApiContext<
     UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
     "queryKey" | "queryFn"
   >,
-): ApiContext<TQueryFnData, TError, TData, TQueryKey> {
+// ): ApiContext<TQueryFnData, TError, TData, TQueryKey> {
+): ApiContext<TQueryFnData, TError, TQueryKey> {
   // Get the JSON string from localStorage and parse it to extract the actual API key
   const apiKeyJson = localStorage.getItem('apiKey') || sessionStorage.getItem('apiKey');
 

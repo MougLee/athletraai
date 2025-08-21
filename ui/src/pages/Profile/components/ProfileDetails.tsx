@@ -10,6 +10,7 @@ import { FormikInput, FeedbackButton } from 'components';
 import { usePostUser } from 'api/apiComponents';
 import { validationSchema } from './ProfileDetails.validations';
 import { useUserContext } from 'contexts/UserContext/User.context';
+import { useTranslation } from 'react-i18next';
 
 export type ProfileDetailsParams = Yup.InferType<typeof validationSchema>;
 
@@ -18,6 +19,7 @@ export const ProfileDetails = () => {
     dispatch,
     state: { user },
   } = useUserContext();
+  const { t } = useTranslation('common');
 
   const mutation = usePostUser();
   const { data, isSuccess } = mutation;
@@ -34,7 +36,7 @@ export const ProfileDetails = () => {
         <Col md={9} lg={7} xl={6} className="mx-auto">
           {user ? (
             <>
-              <h3 className="mb-4">Profile details</h3>
+              <h3 className="mb-4">{t('profile.title')}</h3>
               <Formik<ProfileDetailsParams>
                 initialValues={{
                   login: user.login || '',
@@ -44,23 +46,23 @@ export const ProfileDetails = () => {
                 validationSchema={validationSchema}
               >
                 <Form as={FormikForm}>
-                  <FormikInput name="login" label="Login" />
-                  <FormikInput name="email" label="Email address" />
+                  <FormikInput name="login" label={t('auth.register.login')} />
+                  <FormikInput name="email" label={t('auth.register.email')} />
 
                   <FeedbackButton
                     className="float-end"
                     type="submit"
-                    label="Update profile data"
-                    variant="dark"
+                    label={t('profile.updateButton')}
+                    variant="secondary"
                     Icon={BiArrowFromBottom}
                     mutation={mutation}
-                    successLabel="Profile details changed"
+                    successLabel={t('profile.updateSuccess')}
                   />
                 </Form>
               </Formik>
             </>
           ) : (
-            <h3 className="mb-4">Profile details not available.</h3>
+            <h3 className="mb-4">{t('profile.notAvailable')}</h3>
           )}
         </Col>
       </Row>

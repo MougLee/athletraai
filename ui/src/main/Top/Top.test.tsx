@@ -38,7 +38,7 @@ test('<Top /> shoud render the brand name', () => {
     </MemoryRouter>
   );
 
-  expect(screen.getByText('Athletraai')).toBeInTheDocument();
+  expect(screen.getByText('ATHLETRA AI')).toBeInTheDocument();
 });
 
 test('<Top /> should render the nav bar for unlogged user', () => {

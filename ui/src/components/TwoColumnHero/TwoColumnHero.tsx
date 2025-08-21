@@ -2,7 +2,6 @@ import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Fade from 'react-bootstrap/Fade';
-import Image from 'react-bootstrap/Image';
 
 interface TwoColumnHeroProps {
   children: React.ReactNode;

@@ -4,7 +4,7 @@ import { ProfileDetails } from './components/ProfileDetails';
 import { PasswordDetails } from './components/PasswordDetails';
 
 export const Profile: React.FC = () => (
-  <Container>
+  <Container className='bg-white p-5'>
     <Row>
       <ProfileDetails />
       <PasswordDetails />

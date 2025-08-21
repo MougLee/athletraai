@@ -5,15 +5,17 @@ import * as Yup from 'yup';
 import { TwoColumnHero, FormikInput, FeedbackButton } from 'components';
 import { usePostPasswordresetForgot } from 'api/apiComponents';
 import { validationSchema } from './RecoverLostPassword.validations';
+import { useTranslation } from 'react-i18next';
 
 export type RecoverLostPasswordParams = Yup.InferType<typeof validationSchema>;
 
 export const RecoverLostPassword = () => {
   const mutation = usePostPasswordresetForgot();
+  const { t } = useTranslation('common');
 
   return (
     <TwoColumnHero>
-      <h3 className="mb-4">Recover lost password</h3>
+      <h3 className="mb-4">{t('passwordReset.title')}</h3>
       <Formik<RecoverLostPasswordParams>
         initialValues={{
           loginOrEmail: '',
@@ -22,15 +24,15 @@ export const RecoverLostPassword = () => {
         validationSchema={validationSchema}
       >
         <Form className="w-75" as={FormikForm}>
-          <FormikInput name="loginOrEmail" label="Login or email" />
+          <FormikInput name="loginOrEmail" label={t('auth.login.loginOrEmail')} />
           <FeedbackButton
             className="float-end"
             type="submit"
-            label="Reset password"
+            label={t('passwordReset.resetButton')}
             variant="dark"
             Icon={BiReset}
             mutation={mutation}
-            successLabel="Password reset claim success"
+            successLabel={t('passwordReset.resetSuccess')}
           />
         </Form>
       </Formik>

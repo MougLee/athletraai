@@ -9,12 +9,13 @@ import { useApiKeyState } from 'hooks/auth';
 import { useGetUser, usePostUserLogin } from 'api/apiComponents';
 import { useEffect } from 'react';
 import { useUserContext } from 'contexts/UserContext/User.context';
+import { useTranslation } from 'react-i18next';
 
 export type LoginParams = Yup.InferType<typeof validationSchema>;
 
 export const Login = () => {
   const [apiKeyState, setApiKeyState] = useApiKeyState();
-
+  const { t } = useTranslation('auth');
   const { dispatch } = useUserContext();
 
   const apiKey = apiKeyState?.apiKey;
@@ -41,24 +42,24 @@ export const Login = () => {
 
   return (
     <TwoColumnHero>
-      <h3 className="mb-4">Please sign in</h3>
+      <h3 className="mb-4">{t('login.title')}</h3>
       <Formik<LoginParams>
         initialValues={{ loginOrEmail: '', password: '' }}
         onSubmit={(values) => mutation.mutateAsync({ body: values })}
         validationSchema={validationSchema}
       >
         <Form className="w-75" as={FormikForm}>
-          <FormikInput name="loginOrEmail" label="Login or email" />
-          <FormikInput name="password" type="password" label="Password" />
+          <FormikInput name="loginOrEmail" label={t('login.loginOrEmail')} />
+          <FormikInput name="password" type="password" label={t('login.password')} />
           <div className="d-flex justify-content-between align-items-center">
             <Link className="text-muted" to="/recover-lost-password">
-              Forgot password?
+              {t('login.forgotPassword')}
             </Link>
             <FeedbackButton
               className="float-end"
               type="submit"
-              label="Sign In"
-              variant="dark"
+              label={t('login.loginButton')}
+              variant="primary"
               Icon={BiLogInCircle}
               mutation={mutation}
             />

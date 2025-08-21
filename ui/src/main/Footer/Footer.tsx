@@ -3,23 +3,22 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Spinner from 'react-bootstrap/Spinner';
 import { useGetAdminVersion } from 'api/apiComponents';
+import { useTranslation } from 'react-i18next';
 
 export const Footer = () => {
   const mutation = useGetAdminVersion({});
+  const { t } = useTranslation('common');
 
   return (
     <Container
       fluid
-      className="fixed-bottom bg-dark text-light d-none d-sm-block"
+      className="fixed-bottom bg-teal-light text-light d-none d-sm-block"
     >
       <Container>
         <Row>
           <Col sm={6} className="py-4">
             <small>
-              Athletraai - application scaffolding by{' '}
-              <a href="http://softwaremill.com">SoftwareMill</a>, sources
-              available on{' '}
-              <a href="https://github.com/softwaremill/athletraai/">GitHub</a>
+              {t('footer.copyright')}
             </small>
           </Col>
           <Col sm={6} className="text-end py-4">

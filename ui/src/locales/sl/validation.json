@@ -1,0 +1,33 @@
+{
+  "required": "To polje je obvezno",
+  "minLength": "Mora biti vsaj {{count}} znakov",
+  "maxLength": "Ne sme biti več kot {{count}} znakov",
+  "email": "Vnesite veljaven e-poštni naslov",
+  "url": "Vnesite veljaven URL",
+  "number": "Vnesite veljavno število",
+  "integer": "Vnesite veljavno celo število",
+  "positive": "Vnesite pozitivno število",
+  "min": "Mora biti vsaj {{count}}",
+  "max": "Ne sme biti več kot {{count}}",
+  "pattern": "Prosimo, upoštevajte zahtevano obliko",
+  "password": {
+    "tooShort": "Geslo mora biti vsaj {{count}} znakov",
+    "tooWeak": "Geslo je prešibko",
+    "noMatch": "Gesli se ne ujemata"
+  },
+  "login": {
+    "tooShort": "Prijavno ime mora biti vsaj {{count}} znakov",
+    "invalidFormat": "Prijavno ime vsebuje neveljavne znake",
+    "alreadyUsed": "To prijavno ime je že v uporabi"
+  },
+  "email": {
+    "invalidFormat": "Vnesite veljaven e-poštni naslov",
+    "alreadyUsed": "Ta e-pošta je že v uporabi"
+  },
+  "general": {
+    "invalidInput": "Neveljaven vnos",
+    "serverError": "Prišlo je do napake na strežniku",
+    "networkError": "Prišlo je do omrežne napake",
+    "unknownError": "Prišlo je do neznane napake"
+  }
+}

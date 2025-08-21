@@ -1,0 +1,78 @@
+{
+  "navigation": {
+    "home": "Domov",
+    "login": "Prijava",
+    "register": "Registracija",
+    "profile": "Profil",
+    "logout": "Odjava",
+    "welcome": "Dobrodošli",
+    "recoverPassword": "Obnovi geslo"
+  },
+  "buttons": {
+    "submit": "Pošlji",
+    "cancel": "Prekliči",
+    "save": "Shrani",
+    "edit": "Uredi",
+    "delete": "Izbriši",
+    "back": "Nazaj",
+    "next": "Naprej",
+    "previous": "Prejšnja",
+    "close": "Zapri",
+    "confirm": "Potrdi",
+    "reset": "Ponastavi"
+  },
+  "common": {
+    "loading": "Nalaganje...",
+    "error": "Napaka",
+    "success": "Uspeh",
+    "warning": "Opozorilo",
+    "info": "Informacije",
+    "yes": "Da",
+    "no": "Ne",
+    "required": "Obvezno",
+    "optional": "Neobvezno",
+    "search": "Iskanje",
+    "filter": "Filter",
+    "sort": "Razvrsti",
+    "actions": "Akcije"
+  },
+  "language": {
+    "en": "Angleščina",
+    "sl": "Slovenščina",
+    "switchLanguage": "Spremeni jezik",
+    "currentLanguage": "Trenutni jezik"
+  },
+  "footer": {
+    "copyright": "© 2024 AthletraAI. Vse pravice pridržane.",
+    "privacyPolicy": "Politika zasebnosti",
+    "termsOfService": "Pogoji uporabe",
+    "contact": "Kontakt"
+  },
+  "welcome": {
+    "greeting": "Pozdravljeni!",
+    "title": "Dobrodošli v Athletra AI!",
+    "description": "Za začetek treninga se lahko",
+    "registerLink": "Registrirate",
+    "asNewUser": "kot nov uporabnik,",
+    "loginLink": "Prijavite",
+    "toContinue": "za nadaljevanje."
+  },
+  "profile": {
+    "title": "Podrobnosti profila",
+    "notAvailable": "Podrobnosti profila niso na voljo.",
+    "updateButton": "Posodobi podatke profila",
+    "updateSuccess": "Podrobnosti profila so bile spremenjene"
+  },
+  "passwordReset": {
+    "title": "Obnovi pozabljeno geslo",
+    "resetButton": "Ponastavi geslo",
+    "resetSuccess": "Zahtevek za ponastavitev gesla je bil uspešen"
+  },
+  "notFound": {
+    "oops": "Ups!",
+    "message": "Tukaj zagotovo ne bi smeli biti :)",
+    "chooseLocation": "Prosimo, izberite eno od spodnjih lokacij:",
+    "homePage": "Domača stran",
+    "buildingAthletra": "Gradnja Athletra AI"
+  }
+}

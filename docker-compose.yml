@@ -22,7 +22,7 @@ services:
     #image: 'postgres:17.5'
     image: postgres:15-alpine
     ports:
-      - '5432:5432'
+      - '25432:5432'
     environment:
       POSTGRES_USER: 'postgres'
       POSTGRES_PASSWORD: 'b00t200k4'

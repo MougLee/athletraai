@@ -64,7 +64,7 @@ export const PasswordDetails = () => {
                     className="float-end"
                     type="submit"
                     label="Update password"
-                    variant="dark"
+                    variant="secondary"
                     Icon={BiArrowFromBottom}
                     mutation={mutation}
                     successLabel="Password changed"

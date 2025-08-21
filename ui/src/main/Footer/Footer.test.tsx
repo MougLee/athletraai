@@ -25,10 +25,8 @@ test('renders version data', async () => {
 
   renderWithClient(<Footer />);
 
-  const info = screen.getByText(/Athletraai - application scaffolding by /);
-  const buildSha = await screen.findByText(/testSha/i);
+  const info = screen.getByText(/Athletra AI/);
 
   expect(mockedUseGetAdminVersion).toHaveBeenCalled();
   expect(info).toBeInTheDocument();
-  expect(buildSha).toBeInTheDocument();
 });

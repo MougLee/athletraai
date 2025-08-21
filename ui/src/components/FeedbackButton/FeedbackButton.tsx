@@ -7,6 +7,7 @@ import { BsExclamationCircle, BsCheck } from 'react-icons/bs';
 import { useFormikValuesChanged } from './useFormikValuesChanged';
 import { ErrorMessage } from '../';
 import { UseMutationResult } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 
 interface FeedbackButtonProps extends ButtonProps {
   label: string;
@@ -19,9 +20,12 @@ export const FeedbackButton = ({
   mutation,
   label,
   Icon,
-  successLabel = 'Success',
+  successLabel,
   ...buttonProps
 }: FeedbackButtonProps): ReactElement => {
+  const { t } = useTranslation('common');
+  const defaultSuccessLabel = t('common.success');
+  
   useFormikValuesChanged(() => {
     return !mutation.isIdle && mutation.reset();
   });
@@ -57,7 +61,7 @@ export const FeedbackButton = ({
           &nbsp;{label}
         </Button>
         <Form.Text className="text-success d-inline-block mx-3">
-          {successLabel}
+          {successLabel || defaultSuccessLabel}
         </Form.Text>
       </div>
     );

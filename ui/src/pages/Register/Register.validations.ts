@@ -2,15 +2,15 @@ import * as Yup from 'yup';
 
 export const validationSchema = Yup.object({
   login: Yup.string()
-    .min(3, 'At least 3 characters required')
-    .required('Required'),
+    .min(3, 'auth:register.errors.loginTooShort')
+    .required('validation:required'),
   email: Yup.string()
-    .email('Valid email address required')
-    .required('Required'),
+    .email('auth:register.errors.invalidEmail')
+    .required('validation:required'),
   password: Yup.string()
-    .min(5, 'At least 5 characters required')
-    .required('Required'),
+    .min(5, 'auth:register.errors.passwordTooShort')
+    .required('validation:required'),
   repeatedPassword: Yup.string()
-    .oneOf([Yup.ref('password')], 'Passwords must match')
-    .required('Required'),
+    .oneOf([Yup.ref('password')], 'auth:register.errors.passwordsDoNotMatch')
+    .required('validation:required'),
 });

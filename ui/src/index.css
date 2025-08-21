@@ -40,6 +40,152 @@ body,
   --bs-body-bg: var(--color-white);
   --bs-link-color: var(--athletra-teal);
   --bs-link-hover-color: var(--athletra-teal-dark);
+
+  /* Typography and text colors */
+  --bs-body-color: var(--color-gray-dark);
+  --bs-body-bg: #E0F2F7;
+  --bs-heading-color: var(--athletra-teal);
+
+  /* Bootstrap button overrides for primary variant */
+  --bs-btn-primary-bg: var(--athletra-teal);
+  --bs-btn-primary-border-color: var(--athletra-teal);
+  --bs-btn-primary-hover-bg: var(--athletra-teal-dark);
+  --bs-btn-primary-hover-border-color: var(--athletra-teal-dark);
+  --bs-btn-primary-active-bg: var(--athletra-teal-dark);
+  --bs-btn-primary-active-border-color: var(--athletra-teal-dark);
+  --bs-btn-primary-disabled-bg: var(--athletra-teal);
+  --bs-btn-primary-disabled-border-color: var(--athletra-teal);
+
+  /* Bootstrap button overrides for secondary variant */
+  --bs-btn-secondary-bg: var(--athletra-orange);
+  --bs-btn-secondary-border-color: var(--athletra-orange);
+  --bs-btn-secondary-hover-bg: var(--athletra-orange-dark);
+  --bs-btn-secondary-hover-border-color: var(--athletra-orange-dark);
+  --bs-btn-secondary-active-bg: var(--athletra-orange-dark);
+  --bs-btn-secondary-active-border-color: var(--athletra-orange-dark);
+  --bs-btn-secondary-disabled-bg: var(--athletra-orange);
+  --bs-btn-secondary-disabled-border-color: var(--athletra-orange);
+
+  /* Bootstrap button overrides for success variant */
+  --bs-btn-success-bg: var(--athletra-green);
+  --bs-btn-success-border-color: var(--athletra-green);
+  --bs-btn-success-hover-bg: var(--athletra-green-dark);
+  --bs-btn-success-hover-border-color: var(--athletra-green-dark);
+  --bs-btn-success-active-bg: var(--athletra-green-dark);
+  --bs-btn-success-active-border-color: var(--athletra-green-dark);
+  --bs-btn-success-disabled-bg: var(--athletra-green);
+  --bs-btn-success-disabled-border-color: var(--athletra-green);
+}
+
+/* Direct button style overrides to ensure they take precedence */
+.btn-primary {
+  background-color: var(--athletra-teal) !important;
+  border-color: var(--athletra-teal) !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: var(--athletra-teal-dark) !important;
+  border-color: var(--athletra-teal-dark) !important;
+}
+
+.btn-secondary {
+  background-color: var(--athletra-orange) !important;
+  border-color: var(--athletra-orange) !important;
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-secondary:active {
+  background-color: var(--athletra-orange-dark) !important;
+  border-color: var(--athletra-orange-dark) !important;
+}
+
+.btn-success {
+  background-color: var(--athletra-green) !important;
+  border-color: var(--athletra-green) !important;
+}
+
+.btn-success:hover,
+.btn-success:focus,
+.btn-success:active {
+  background-color: var(--athletra-green-dark) !important;
+  border-color: var(--athletra-green-dark) !important;
+}
+
+/* Form input styling to match Athletra AI site */
+.form-control,
+.form-select {
+  border: 1px solid var(--athletra-teal-light);
+  border-radius: 8px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--athletra-teal);
+  box-shadow: 0 0 0 0.2rem rgba(0, 200, 200, 0.25);
+  outline: none;
+}
+
+.form-control:hover,
+.form-select:hover {
+  border-color: var(--athletra-teal);
+}
+
+/* Typography and element styling to match Athletra AI site */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--athletra-teal);
+}
+
+h1 {
+  font-weight: 700;
+  font-size: 2.5rem;
+}
+
+h2 {
+  font-weight: 600;
+  font-size: 2rem;
+}
+
+h3 {
+  font-weight: 600;
+  font-size: 1.5rem;
+  color: var(--athletra-teal);
+}
+
+/* Link styling */
+a {
+  color: var(--athletra-teal);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover,
+a:focus {
+  color: var(--athletra-teal-dark);
+  text-decoration: underline;
+}
+
+/* Placeholder text */
+::placeholder {
+  color: var(--color-gray-light);
+}
+
+/* Form backgrounds */
+.form-control,
+.form-select {
+  background-color: var(--color-white);
+}
+
+/* Page background */
+body {
+  background-color: #E0F2F7;
+}
+
+.bg-teal-light {
+  background-color: var(--athletra-teal-light);
 }
 
 /* Brand utilities */
@@ -70,4 +216,56 @@ body,
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--athletra-orange);
+}
+
+/* Navbar brand styling */
+.navbar-brand .brand-icon {
+  width: 40px;
+  height: 40px;
+  color: var(--athletra-teal);
+}
+
+.navbar-brand .brand-name {
+  font-size: 1.2rem;
+  margin: 0;
+  color: var(--athletra-orange);
+}
+
+/* Language selector styling */
+.language-selector {
+  min-width: 140px;
+}
+
+.language-selector .dropdown-toggle {
+  background-color: var(--color-white);
+  border-color: var(--athletra-teal);
+  color: var(--athletra-teal);
+  font-weight: 500;
+}
+
+.language-selector .dropdown-toggle:hover,
+.language-selector .dropdown-toggle:focus {
+  background-color: var(--athletra-teal);
+  border-color: var(--athletra-teal);
+  color: var(--color-white);
+}
+
+.language-selector .dropdown-menu {
+  border-color: var(--athletra-teal);
+  box-shadow: 0 2px 8px rgba(0, 200, 200, 0.15);
+}
+
+.language-selector .dropdown-item {
+  color: var(--color-gray-dark);
+  transition: all 0.2s ease;
+}
+
+.language-selector .dropdown-item:hover {
+  background-color: var(--athletra-teal-light);
+  color: var(--athletra-teal);
+}
+
+.language-selector .dropdown-item.active {
+  background-color: var(--athletra-teal);
+  color: var(--color-white);
 }

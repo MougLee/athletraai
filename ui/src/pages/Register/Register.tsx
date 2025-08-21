@@ -6,9 +6,11 @@ import { usePostUserRegister } from 'api/apiComponents';
 import { validationSchema } from './Register.validations';
 import { initialValues, RegisterParams } from './Register.utils';
 import { useApiKeyState } from 'hooks/auth';
+import { useTranslation } from 'react-i18next';
 
 export const Register = () => {
   const [, setApiKeyState] = useApiKeyState();
+  const { t } = useTranslation('auth');
 
   const mutation = usePostUserRegister({
     onSuccess: ({ apiKey }) => {
@@ -18,27 +20,27 @@ export const Register = () => {
 
   return (
     <TwoColumnHero>
-      <h3 className="mb-4">Please sign up</h3>
+      <h3 className="mb-4">{t('register.title')}</h3>
       <Formik<RegisterParams>
         initialValues={initialValues}
         onSubmit={(values) => mutation.mutate({ body: values })}
         validationSchema={validationSchema}
       >
         <Form className="w-75" as={FormikForm}>
-          <FormikInput name="login" label="Login" />
-          <FormikInput name="email" label="Email address" />
-          <FormikInput name="password" label="Password" type="password" />
+          <FormikInput name="login" label={t('register.login')} />
+          <FormikInput name="email" label={t('register.email')} />
+          <FormikInput name="password" label={t('register.password')} type="password" />
           <FormikInput
             name="repeatedPassword"
-            label="Repeat password"
+            label={t('register.repeatPassword')}
             type="password"
           />
 
           <FeedbackButton
             className="float-end"
             type="submit"
-            label="Create new account"
-            variant="dark"
+            label={t('register.registerButton')}
+            variant="primary"
             Icon={BiUserPlus}
             mutation={mutation}
           />

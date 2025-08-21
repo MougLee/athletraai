@@ -1,0 +1,33 @@
+{
+  "required": "This field is required",
+  "minLength": "Must be at least {{count}} characters",
+  "maxLength": "Must be no more than {{count}} characters",
+  "email": "Please enter a valid email address",
+  "url": "Please enter a valid URL",
+  "number": "Please enter a valid number",
+  "integer": "Please enter a valid integer",
+  "positive": "Please enter a positive number",
+  "min": "Must be at least {{count}}",
+  "max": "Must be no more than {{count}}",
+  "pattern": "Please match the requested format",
+  "password": {
+    "tooShort": "Password must be at least {{count}} characters",
+    "tooWeak": "Password is too weak",
+    "noMatch": "Passwords do not match"
+  },
+  "login": {
+    "tooShort": "Login must be at least {{count}} characters",
+    "invalidFormat": "Login contains invalid characters",
+    "alreadyUsed": "This login is already in use"
+  },
+  "email": {
+    "invalidFormat": "Please enter a valid email address",
+    "alreadyUsed": "This email is already in use"
+  },
+  "general": {
+    "invalidInput": "Invalid input",
+    "serverError": "Server error occurred",
+    "networkError": "Network error occurred",
+    "unknownError": "An unknown error occurred"
+  }
+}

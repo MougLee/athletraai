@@ -22,7 +22,7 @@ test('<Main /> should show the app for logged-in users', () => {
     </MemoryRouter>
   );
 
-  expect(screen.getByText('Welcome to Athletraai!')).toBeInTheDocument();
+  expect(screen.getByText('Welcome to Athletra AI!')).toBeInTheDocument();
 });
 
 test('<Main /> should show the app for logged-out users', () => {
@@ -36,5 +36,5 @@ test('<Main /> should show the app for logged-out users', () => {
     </MemoryRouter>
   );
 
-  expect(screen.getByText('Welcome to Athletraai!')).toBeInTheDocument();
+  expect(screen.getByText('Welcome to Athletra AI!')).toBeInTheDocument();
 });
