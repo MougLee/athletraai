@@ -20,7 +20,7 @@ class UserApi(auth: Auth[ApiKey], userService: UserService, db: DB, metrics: Met
   // endpoint implementations
 
   private val registerUserServerEndpoint = registerUserEndpoint.handle { data =>
-    val apiKeyResult = db.transactEither(userService.registerNewUser(data.login, data.email, data.password))
+    val apiKeyResult = db.transactEither(userService.registerNewUser(data.login, data.email, data.password, data.language, data.timezone))
     metrics.registeredUsersCounter.add(1)
     apiKeyResult.map(apiKey => Register_OUT(apiKey.id.toString))
   }
@@ -44,11 +44,11 @@ class UserApi(auth: Auth[ApiKey], userService: UserService, db: DB, metrics: Met
 
   private val getUserServerEndpoint = authedEndpoint(getUserEndpoint).handle { id => (_: Unit) =>
     val userResult = db.transactEither(userService.findById(id))
-    userResult.map(user => GetUser_OUT(user.login, user.emailLowerCase, user.createdOn))
+    userResult.map(user => GetUser_OUT(user.login, user.emailLowerCase, user.createdAt))
   }
 
   private val updateUserServerEndpoint = authedEndpoint(updateUserEndpoint).handle { id => data =>
-    db.transactEither(userService.changeUser(id, data.login, data.email)).map(_ => UpdateUser_OUT())
+    db.transactEither(userService.changeUser(id, data.login, data.email, data.language, data.timezone)).map(_ => UpdateUser_OUT())
   }
 
   override val endpoints = List(
@@ -110,7 +110,7 @@ object UserApi extends EndpointsForDocs:
 
   //
 
-  case class Register_IN(login: String, email: String, password: String) derives ConfiguredJsonValueCodec, Schema
+  case class Register_IN(login: String, email: String, password: String, language: String = "en", timezone: String = "UTC") derives ConfiguredJsonValueCodec, Schema
   case class Register_OUT(apiKey: String) derives ConfiguredJsonValueCodec, Schema
 
   case class ChangePassword_IN(currentPassword: String, newPassword: String) derives ConfiguredJsonValueCodec, Schema
@@ -122,7 +122,7 @@ object UserApi extends EndpointsForDocs:
   case class Logout_IN(apiKey: String) derives ConfiguredJsonValueCodec, Schema
   case class Logout_OUT() derives ConfiguredJsonValueCodec, Schema
 
-  case class UpdateUser_IN(login: String, email: String) derives ConfiguredJsonValueCodec, Schema
+  case class UpdateUser_IN(login: String, email: String, language: Option[String] = None, timezone: Option[String] = None) derives ConfiguredJsonValueCodec, Schema
   case class UpdateUser_OUT() derives ConfiguredJsonValueCodec, Schema
 
   case class GetUser_OUT(login: String, email: String, createdOn: Instant) derives ConfiguredJsonValueCodec, Schema

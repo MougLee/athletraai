@@ -12,7 +12,7 @@ import scala.concurrent.duration.*
 
 class UserApiTest extends BaseTest with Eventually with TestDependencies with EitherValues:
 
-  "/user/register" should "register" in {
+  "/users/register" should "register" in {
     // given
     val (login, email, password) = requests.randomLoginEmailPassword()
 
@@ -29,7 +29,45 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ei
     response4.body.value.email shouldBe email
   }
 
-  "/user/register" should "register and ignore leading and trailing spaces" in {
+  "/users/register" should "register with default language (en)" in {
+    // given
+    val (login, email, password) = requests.randomLoginEmailPassword()
+
+    // when
+    val response1 = requests.registerUser(login, email, password)
+
+    // then
+    response1.code shouldBe StatusCode.Ok
+    val apiKey = response1.body.value.apiKey
+
+    // when
+    val response2 = requests.getUser(apiKey)
+
+    // then
+    response2.body.value.email shouldBe email
+    // Note: Language preference is stored in user_profiles table but not exposed via this endpoint
+  }
+
+  "/users/register" should "register with explicit language preference" in {
+    // given
+    val (login, email, password) = requests.randomLoginEmailPassword()
+
+    // when
+    val response1 = requests.registerUser(login, email, password, "sl")
+
+    // then
+    response1.code shouldBe StatusCode.Ok
+    val apiKey = response1.body.value.apiKey
+
+    // when
+    val response2 = requests.getUser(apiKey)
+
+    // then
+    response2.body.value.email shouldBe email
+    // Language preference is stored internally
+  }
+
+  "/users/register" should "register and ignore leading and trailing spaces" in {
     // given
     val (login, email, password) = requests.randomLoginEmailPassword()
 
@@ -46,7 +84,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ei
     response4.body.value.email shouldBe email
   }
 
-  "/user/register" should "not register if data is invalid" in {
+  "/users/register" should "not register if data is invalid" in {
     // given
     val (_, email, password) = requests.randomLoginEmailPassword()
 
@@ -58,7 +96,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ei
     response1.body should matchPattern { case Left(_: Fail) => }
   }
 
-  "/user/register" should "not register if email is taken" in {
+  "/users/register" should "not register if email is taken" in {
     // given
     val (login, email, password) = requests.randomLoginEmailPassword()
 
@@ -71,7 +109,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ei
     response2.code shouldBe StatusCode.BadRequest
   }
 
-  "/user/register" should "send a welcome email" in {
+  "/users/register" should "send a welcome email" in {
     // when
     val RegisteredUser(login, email, _, _) = requests.newRegisteredUsed()
 
@@ -80,7 +118,19 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ei
     DummyEmailSender.findSentEmail(email, s"registration confirmation for user $login").isDefined shouldBe true
   }
 
-  "/user/login" should "login the user using the login" in {
+  "/users/register" should "send localized welcome email" in {
+    // when
+    val (login, email, password) = requests.randomLoginEmailPassword()
+    val response = requests.registerUser(login, email, password, "sl")
+
+    // then
+    response.code shouldBe StatusCode.Ok
+    dependencies.emailService.sendBatch()
+    // Email should be sent in Slovene (subject and content localized)
+    DummyEmailSender.findSentEmail(email, "potrditev registracije za uporabnika").isDefined shouldBe true
+  }
+
+  "/users/login" should "login the user using the login" in {
     // given
     val RegisteredUser(login, _, password, _) = requests.newRegisteredUsed()
 
@@ -91,7 +141,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ei
     response1.body should matchPattern { case Right(_) => }
   }
 
-  "/user/login" should "login the user using the email" in {
+  "/users/login" should "login the user using the email" in {
     // given
     val RegisteredUser(_, email, password, _) = requests.newRegisteredUsed()
 
@@ -102,7 +152,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ei
     response1.body should matchPattern { case Right(_) => }
   }
 
-  "/user/login" should "login the user using uppercase email" in {
+  "/users/login" should "login the user using uppercase email" in {
     // given
     val RegisteredUser(_, email, password, _) = requests.newRegisteredUsed()
 
@@ -113,7 +163,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ei
     response1.body should matchPattern { case Right(_) => }
   }
 
-  "/user/login" should "login the user with leading or trailing spaces" in {
+  "/users/login" should "login the user with leading or trailing spaces" in {
     // given
     val RegisteredUser(login, _, password, _) = requests.newRegisteredUsed()
 
@@ -124,7 +174,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ei
     response1.body should matchPattern { case Right(_) => }
   }
 
-  "/user/login" should "login the user for the given number of hours" in {
+  "/users/login" should "login the user for the given number of hours" in {
     // given
     val RegisteredUser(login, _, password, _) = requests.newRegisteredUsed()
 
@@ -141,7 +191,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ei
     requests.getUser(apiKey).code shouldBe StatusCode.Unauthorized
   }
 
-  "/user/login" should "respond with 403 HTTP status code and 'Incorrect login/email or password' message if user was not found" in {
+  "/users/login" should "respond with 403 HTTP status code and 'Incorrect login/email or password' message if user was not found" in {
     // given
     val RegisteredUser(_, _, password, _) = requests.newRegisteredUsed()
 
@@ -150,7 +200,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ei
     response.body shouldBe Left(Fail.Unauthorized("Incorrect login/email or password"))
   }
 
-  "/user/login" should "respond with 403 HTTP status code and 'Incorrect login/email or password' message if password is incorrect for user" in {
+  "/users/login" should "respond with 403 HTTP status code and 'Incorrect login/email or password' message if password is incorrect for user" in {
     // given
     val RegisteredUser(login, _, _, _) = requests.newRegisteredUsed()
 
@@ -159,11 +209,11 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ei
     response.body shouldBe Left(Fail.Unauthorized("Incorrect login/email or password"))
   }
 
-  "/user/info" should "respond with 403 if the token is invalid" in {
+  "/users/me" should "respond with 403 if the token is invalid" in {
     requests.getUser("invalid").code shouldBe StatusCode.Unauthorized
   }
 
-  "/user/logout" should "logout the user" in {
+  "/users/logout" should "logout the user" in {
     // given
     val RegisteredUser(_, _, _, apiKey) = requests.newRegisteredUsed()
 
@@ -180,7 +230,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ei
     responseAfterLogout.code shouldBe StatusCode.Unauthorized
   }
 
-  "/user/changepassword" should "change the password" in {
+  "/users/change-password" should "change the password" in {
     // given
     val RegisteredUser(login, _, password, apiKey) = requests.newRegisteredUsed()
     val newPassword = password + password
@@ -194,7 +244,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ei
     requests.loginUser(login, newPassword, None).code shouldBe StatusCode.Ok
   }
 
-  "/user/changepassword" should "create new session and invalidate all existing user's sessions" in {
+  "/users/change-password" should "create new session and invalidate all existing user's sessions" in {
     // given
     val RegisteredUser(login, _, password, apiKey1) = requests.newRegisteredUsed()
     val newPassword = password + password
@@ -212,7 +262,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ei
     requests.getUser(apiKey2).code shouldBe StatusCode.Unauthorized
   }
 
-  "/user/changepassword" should "not change the password if the current is invalid" in {
+  "/users/change-password" should "not change the password if the current is invalid" in {
     // given
     val RegisteredUser(login, _, password, apiKey) = requests.newRegisteredUsed()
     val newPassword = password + password
@@ -227,7 +277,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ei
     requests.loginUser(login, newPassword, None).code shouldBe StatusCode.Unauthorized
   }
 
-  "/user/changepassword" should "not change the password if the new password is invalid" in {
+  "/users/change-password" should "not change the password if the new password is invalid" in {
     // given
     val RegisteredUser(login, _, password, apiKey) = requests.newRegisteredUsed()
     val newPassword = ""
@@ -242,7 +292,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ei
     requests.loginUser(login, newPassword, None).code shouldBe StatusCode.Unauthorized
   }
 
-  "/user" should "update the login" in {
+  "/users/me" should "update the login" in {
     // given
     val RegisteredUser(login, email, _, apiKey) = requests.newRegisteredUsed()
     val newLogin = login + login
@@ -257,7 +307,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ei
     getUserResponseBody.email shouldBe email
   }
 
-  "/user" should "update the login if the new login is invalid" in {
+  "/users/me" should "update the login if the new login is invalid" in {
     // given
     val RegisteredUser(login, email, _, apiKey) = requests.newRegisteredUsed()
     val newLogin = "a"
@@ -273,7 +323,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ei
     getUserResponseBody.email shouldBe email
   }
 
-  "/user" should "update the email" in {
+  "/users/me" should "update the email" in {
     // given
     val RegisteredUser(login, _, _, apiKey) = requests.newRegisteredUsed()
     val (_, newEmail, _) = requests.randomLoginEmailPassword()
@@ -288,7 +338,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ei
     getUserResponseBody.email shouldBe newEmail
   }
 
-  "/user" should "not update the email if the new email is invalid" in {
+  "/users/me" should "not update the email if the new email is invalid" in {
     // given
     val RegisteredUser(login, email, _, apiKey) = requests.newRegisteredUsed()
     val newEmail = "aaa"
@@ -304,7 +354,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ei
     getUserResponseBody.email shouldBe email
   }
 
-  "/user" should "update the login and email with leading or trailing spaces" in {
+  "/users/me" should "update the login and email with leading or trailing spaces" in {
     // given
     val RegisteredUser(login, _, _, apiKey) = requests.newRegisteredUsed()
     val newLogin = login + login
@@ -319,4 +369,50 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ei
     getUserResponseBody.login shouldBe newLogin
     getUserResponseBody.email shouldBe newEmail
   }
+
+  "/users/me/language" should "update user language preference" in {
+    // given
+    val RegisteredUser(login, email, _, apiKey) = requests.newRegisteredUsed()
+
+    // when
+    val response = requests.updateUser(apiKey, login, email, Some("sl"), None)
+
+    // then
+    response.code shouldBe StatusCode.Ok
+    response.body should matchPattern { case Right(_) => }
+  }
+
+  "/users/me/language" should "not update language if language is unsupported" in {
+    // given
+    val RegisteredUser(login, email, _, apiKey) = requests.newRegisteredUsed()
+
+    // when
+    val response = requests.updateUser(apiKey, login, email, Some("fr"), None)
+
+    // then
+    response.code shouldBe StatusCode.BadRequest
+    response.body shouldBe Left(Fail.IncorrectInput("Unsupported language: fr"))
+  }
+
+  "/users/me/language" should "respond with 401 if unauthorized" in {
+    // when
+    val response = requests.updateUser("invalid", "testuser", "test@example.com", Some("sl"), None)
+
+    // then
+    response.code shouldBe StatusCode.Unauthorized
+  }
+
+  "/users/me/language" should "accept valid language codes" in {
+    // given
+    val RegisteredUser(login, email, _, apiKey) = requests.newRegisteredUsed()
+
+    // when & then - English
+    val response1 = requests.updateUser(apiKey, login, email, Some("en"), None)
+    response1.code shouldBe StatusCode.Ok
+
+    // when & then - Slovene
+    val response2 = requests.updateUser(apiKey, login, email, Some("sl"), None)
+    response2.code shouldBe StatusCode.Ok
+  }
+
 end UserApiTest

@@ -11,7 +11,7 @@ export type RecoverLostPasswordParams = Yup.InferType<typeof validationSchema>;
 
 export const RecoverLostPassword = () => {
   const mutation = usePostPasswordresetForgot();
-  const { t } = useTranslation('common');
+  const { t } = useTranslation(['common', 'auth']);
 
   return (
     <TwoColumnHero>
@@ -24,7 +24,7 @@ export const RecoverLostPassword = () => {
         validationSchema={validationSchema}
       >
         <Form className="w-75" as={FormikForm}>
-          <FormikInput name="loginOrEmail" label={t('auth.login.loginOrEmail')} />
+          <FormikInput name="loginOrEmail" label={t('login.loginOrEmail', { ns: 'auth' })} />
           <FeedbackButton
             className="float-end"
             type="submit"

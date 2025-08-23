@@ -25,6 +25,12 @@ class Requests(backend: SyncBackend):
       .apply(Register_IN(login, email, password))
       .send(backend)
 
+  def registerUser(login: String, email: String, password: String, language: String): Response[Either[Fail, Register_OUT]] =
+    SttpClientInterpreter()
+      .toRequestThrowDecodeFailures(UserApi.registerUserEndpoint, basePath)
+      .apply(Register_IN(login, email, password, language))
+      .send(backend)
+
   def newRegisteredUsed(): RegisteredUser =
     val (login, email, password) = randomLoginEmailPassword()
 
@@ -70,6 +76,13 @@ class Requests(backend: SyncBackend):
       .toSecureRequestThrowDecodeFailures(UserApi.updateUserEndpoint, basePath)
       .apply(apiKey.asId)
       .apply(UpdateUser_IN(login, email))
+      .send(backend)
+
+  def updateUser(apiKey: String, login: String, email: String, language: Option[String], timezone: Option[String]): Response[Either[Fail, UpdateUser_OUT]] =
+    SttpClientInterpreter()
+      .toSecureRequestThrowDecodeFailures(UserApi.updateUserEndpoint, basePath)
+      .apply(apiKey.asId)
+      .apply(UpdateUser_IN(login, email, language, timezone))
       .send(backend)
 
   def forgotPassword(loginOrEmail: String): Response[Either[Fail, ForgotPassword_OUT]] =

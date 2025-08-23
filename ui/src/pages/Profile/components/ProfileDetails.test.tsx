@@ -4,6 +4,7 @@ import { UserContext } from 'contexts/UserContext/User.context';
 import { UserState } from 'contexts';
 import { renderWithClient } from 'tests';
 import { ProfileDetails } from './ProfileDetails';
+import { usePostUser } from 'api/apiComponents';
 
 const loggedUserState: UserState = {
   user: {
@@ -12,20 +13,22 @@ const loggedUserState: UserState = {
     createdOn: '2020-10-09T09:57:17.995288Z',
   },
 };
-const dispatch = vi.fn();
-const mockMutate = vi.fn();
-const mockResponse = vi.fn();
-
 vi.mock('api/apiComponents', () => ({
-  usePostUser: () => mockResponse(),
+  usePostUser: vi.fn(),
 }));
 
 beforeEach(() => {
-  vi.clearAllMocks();
+  vi.restoreAllMocks();
 });
 
+
+
+
 test('<ProfileDetails /> should render current user data', () => {
-  mockResponse.mockReturnValueOnce({
+  const dispatch = vi.fn();
+  const mockMutate = vi.fn();
+  
+  (usePostUser as any).mockReturnValue({
     mutate: mockMutate,
     reset: vi.fn(),
     data: { apiKey: 'test-api-key' },
@@ -49,7 +52,10 @@ test('<ProfileDetails /> should render current user data', () => {
 });
 
 test('<ProfileDetails /> should not render any existing user data', () => {
-  mockResponse.mockReturnValueOnce({
+  const dispatch = vi.fn();
+  const mockMutate = vi.fn();
+  
+  (usePostUser as any).mockReturnValue({
     mutate: mockMutate,
     reset: vi.fn(),
     data: { apiKey: 'test-api-key' },
@@ -68,7 +74,10 @@ test('<ProfileDetails /> should not render any existing user data', () => {
 });
 
 test('<ProfileDetails /> should handle details update successfully', async () => {
-  mockResponse.mockReturnValueOnce({
+  const dispatch = vi.fn();
+  const mockMutate = vi.fn();
+  
+  (usePostUser as any).mockReturnValue({
     mutate: mockMutate,
     reset: vi.fn(),
     data: { apiKey: 'test-api-key' },
@@ -106,7 +115,10 @@ test('<ProfileDetails /> should handle details update successfully', async () =>
 });
 
 test('<ProfileDetails /> should handle details update error', async () => {
-  mockResponse.mockReturnValueOnce({
+  const dispatch = vi.fn();
+  const mockMutate = vi.fn();
+  
+  (usePostUser as any).mockReturnValue({
     mutate: mockMutate,
     reset: vi.fn(),
     data: { apiKey: 'test-api-key' },

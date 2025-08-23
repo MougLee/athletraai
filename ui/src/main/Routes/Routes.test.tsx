@@ -41,7 +41,7 @@ test('<Routes /> should render protected route for unlogged user', () => {
     </MemoryRouter>
   );
 
-  expect(screen.getByText('Please sign in')).toBeInTheDocument();
+  expect(screen.getByText('Login')).toBeInTheDocument();
 });
 
 test('<Routes /> should render protected route for logged-in user', () => {

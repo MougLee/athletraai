@@ -1,9 +1,10 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { Welcome } from './Welcome';
+import { renderWithClient } from 'tests';
 
 test('renders text content', () => {
-  render(
+  renderWithClient(
     <MemoryRouter initialEntries={['/login']}>
       <Welcome />
     </MemoryRouter>

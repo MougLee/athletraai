@@ -40,6 +40,13 @@ class UserModel:
   def updateEmail(userId: Id[User], newEmail: LowerCased)(using DbTx): Unit =
     sql"""UPDATE $u SET ${u.emailLowerCase} = $newEmail WHERE ${u.id} = $userId""".update.run().discard
 
+  def updateLanguage(userId: Id[User], newLanguage: String)(using DbTx): Unit =
+    sql"""UPDATE $u SET language = $newLanguage WHERE ${u.id} = $userId""".update.run().discard
+
+  def updateTimezone(userId: Id[User], newTimezone: String)(using DbTx): Unit =
+    sql"""UPDATE $u SET timezone = $newTimezone WHERE ${u.id} = $userId""".update.run().discard
+  end updateTimezone
+
 end UserModel
 
 @Table(PostgresDbType, SqlNameMapper.CamelToSnakeCase)
@@ -50,7 +57,11 @@ case class User(
     @SqlName("login_lowercase") loginLowerCase: LowerCased,
     @SqlName("email_lowercase") emailLowerCase: LowerCased,
     @SqlName("password") passwordHash: Hashed,
-    createdOn: Instant
+    language: String = "en",
+    timezone: String = "UTC",
+    unitSystem: String = "metric",
+    createdAt: Instant,
+    updatedAt: Instant
 ):
   def verifyPassword(password: String): PasswordVerificationStatus =
     if Password.check(password, passwordHash).`with`(PasswordHashing.Argon2) then PasswordVerificationStatus.Verified

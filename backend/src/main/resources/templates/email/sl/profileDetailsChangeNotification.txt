@@ -1,0 +1,4 @@
+Athletra AI - obvestilo o posodobitvi profila
+Spoštovani {{userName}},
+
+podatki vašega profila so bili uspešno posodobljeni.

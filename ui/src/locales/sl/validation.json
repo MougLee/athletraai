@@ -29,5 +29,6 @@
     "serverError": "Prišlo je do napake na strežniku",
     "networkError": "Prišlo je do omrežne napake",
     "unknownError": "Prišlo je do neznane napake"
-  }
+  },
+  "invalidLanguage": "Neveljaven jezik"
 }

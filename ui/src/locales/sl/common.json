@@ -8,6 +8,9 @@
     "welcome": "Dobrodošli",
     "recoverPassword": "Obnovi geslo"
   },
+  "auth": {
+    "pleaseSignIn": "Prosimo, prijavite se"
+  },
   "buttons": {
     "submit": "Pošlji",
     "cancel": "Prekliči",

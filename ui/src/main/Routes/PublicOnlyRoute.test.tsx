@@ -22,7 +22,7 @@ test('<PublicOnlyRoute /> should render login page for anonymous', () => {
     </MemoryRouter>
   );
 
-  expect(screen.getByText('Please sign in')).toBeVisible();
+  expect(screen.getByText('Login')).toBeVisible();
 });
 
 test('<PublicOnlyRoute /> should not render login page to logged in users', () => {

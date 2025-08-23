@@ -19,7 +19,7 @@ export const ProfileDetails = () => {
     dispatch,
     state: { user },
   } = useUserContext();
-  const { t } = useTranslation('common');
+  const { t } = useTranslation(['common', 'auth']);
 
   const mutation = usePostUser();
   const { data, isSuccess } = mutation;
@@ -46,8 +46,8 @@ export const ProfileDetails = () => {
                 validationSchema={validationSchema}
               >
                 <Form as={FormikForm}>
-                  <FormikInput name="login" label={t('auth.register.login')} />
-                  <FormikInput name="email" label={t('auth.register.email')} />
+                  <FormikInput name="login" label={t('register.login', { ns: 'auth' })} />
+                  <FormikInput name="email" label={t('register.email', { ns: 'auth' })} />
 
                   <FeedbackButton
                     className="float-end"

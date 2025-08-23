@@ -61,6 +61,8 @@ export type RegisterIN = {
   login: string;
   email: string;
   password: string;
+  language: string;
+  timezone: string;
 };
 
 export type RegisterOUT = {
@@ -70,6 +72,8 @@ export type RegisterOUT = {
 export type UpdateUserIN = {
   login: string;
   email: string;
+  language?: string;
+  timezone?: string;
 };
 
 export type UpdateUserOUT = Record<string, any>;

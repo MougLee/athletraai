@@ -29,5 +29,6 @@
     "serverError": "Server error occurred",
     "networkError": "Network error occurred",
     "unknownError": "An unknown error occurred"
-  }
+  },
+  "invalidLanguage": "Invalid language selected"
 }

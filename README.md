@@ -1,13 +1,13 @@
-![Athletraai](https://github.com/softwaremill/athletraai/raw/master/banner.png)
+![Athletraai](https://github.com/athletraai/athletraai/raw/master/banner.png)
 
-[![CI](https://github.com/softwaremill/athletraai/workflows/Athletraai%20CI/badge.svg)](https://github.com/softwaremill/athletraai/actions?query=workflow%3A%22Athletraai+CI%22)
+[![CI](https://github.com/athletraai/athletraai/workflows/Athletraai%20CI/badge.svg)](https://github.com/athletraai/athletraai/actions?query=workflow%3A%22Athletraai+CI%22)
 
 Athletraai is a scaffolding project to allow quick start of development of a microservice or a web application. If you'd
 like to have a jump start developing a Scala-based project, skipping the boring parts and focusing on the real business
 value, this template might be for you!
 
 You can start testing or developing Athletraai right away with the below setup, or proceed to the mor ecomplete
-[Athletraai documentation](http://softwaremill.github.io/athletraai/).
+[Athletraai documentation](http://athletraai.github.io/athletraai/).
 
 # Run locally using Docker
 
@@ -77,14 +77,14 @@ If you'd like to use Athletraai as a template for your own project it might be u
 
 # Project info
 
-[The docs](http://softwaremill.github.io/athletraai/) dive deeper into various aspects of the project (architecture, tech
+[The docs](http://athletraai.github.io/athletraai/) dive deeper into various aspects of the project (architecture, tech
 stack, development tips).
 
 ## Commercial Support
 
 We offer commercial support for Athletraai and related technologies, as well as development services. [Contact
-us](https://softwaremill.com) to learn more about our offer!
+us](https://athletraai.com) to learn more about our offer!
 
 ## Copyright
 
-Copyright (C) 2013-2025 SoftwareMill [https://softwaremill.com](https://softwaremill.com).
+Copyright (C) 2025 Athletra AI [https://athletraai.com](https://athletraai.com).

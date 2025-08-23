@@ -13,4 +13,9 @@ export const validationSchema = Yup.object({
   repeatedPassword: Yup.string()
     .oneOf([Yup.ref('password')], 'auth:register.errors.passwordsDoNotMatch')
     .required('validation:required'),
+  language: Yup.string()
+    .oneOf(['en', 'sl'], 'validation:invalidLanguage')
+    .required('validation:required'),
+  timezone: Yup.string()
+    .required('validation:required'),
 });

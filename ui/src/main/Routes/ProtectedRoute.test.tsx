@@ -26,7 +26,7 @@ test('<ProtectedRoute /> should not render protected route for anonymous user', 
     </MemoryRouter>
   );
 
-  expect(screen.getByText('Please sign in')).toBeInTheDocument();
+  expect(screen.getByText('Login')).toBeInTheDocument();
 });
 
 test('<ProtectedRoute /> should render protected route to a logged-in user', () => {

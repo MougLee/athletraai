@@ -2,12 +2,12 @@ import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { renderWithClient } from 'tests';
 import { RecoverLostPassword } from './RecoverLostPassword';
+import { usePostPasswordresetForgot } from 'api/apiComponents';
 
 const mockMutate = vi.fn();
-const mockResponse = vi.fn();
 
 vi.mock('api/apiComponents', () => ({
-  usePostPasswordresetForgot: () => mockResponse(),
+  usePostPasswordresetForgot: vi.fn(),
 }));
 
 beforeEach(() => {
@@ -15,12 +15,14 @@ beforeEach(() => {
 });
 
 test('renders header', () => {
-  mockResponse.mockReturnValueOnce({
+  (usePostPasswordresetForgot as any).mockReturnValue({
     mutate: mockMutate,
     reset: vi.fn(),
     data: { apiKey: 'test-api-key' },
     isSuccess: true,
     isError: false,
+    isPending: false,
+    isIdle: false,
     error: '',
   });
 
@@ -30,18 +32,20 @@ test('renders header', () => {
 });
 
 test('handles password recover success', async () => {
-  mockResponse.mockReturnValueOnce({
+  (usePostPasswordresetForgot as any).mockReturnValue({
     mutate: mockMutate,
     reset: vi.fn(),
     data: { apiKey: 'test-api-key' },
     isSuccess: true,
     isError: false,
+    isPending: false,
+    isIdle: false,
     error: '',
   });
 
   renderWithClient(<RecoverLostPassword />);
 
-  await userEvent.type(screen.getByLabelText('Login or email'), 'test-login');
+  await userEvent.type(screen.getByLabelText('Login or Email'), 'test-login');
   await userEvent.click(screen.getByText('Reset password'));
 
   expect(mockMutate).toHaveBeenCalledWith({
@@ -53,18 +57,20 @@ test('handles password recover success', async () => {
 });
 
 test('handles password recover error', async () => {
-  mockResponse.mockReturnValueOnce({
+  (usePostPasswordresetForgot as any).mockReturnValue({
     mutate: mockMutate,
     reset: vi.fn(),
     data: { apiKey: 'test-api-key' },
     isSuccess: false,
     isError: true,
+    isPending: false,
+    isIdle: false,
     error: 'Test error',
   });
 
   renderWithClient(<RecoverLostPassword />);
 
-  await userEvent.type(screen.getByLabelText('Login or email'), 'test-login');
+  await userEvent.type(screen.getByLabelText('Login or Email'), 'test-login');
   await userEvent.click(screen.getByText('Reset password'));
 
   expect(mockMutate).toHaveBeenCalledWith({

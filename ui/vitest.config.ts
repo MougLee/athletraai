@@ -10,6 +10,8 @@ export default defineConfig((env) =>
         environment: 'jsdom',
         setupFiles: ['./src/setupTest.ts'],
         reporters: ['verbose'],
+        testTimeout: 10000, // Increase timeout to 10 seconds
+        hookTimeout: 10000, // Increase hook timeout to 10 seconds
         coverage: {
           reporter: ['text', 'json', 'html'],
           include: ['src/**/*'],

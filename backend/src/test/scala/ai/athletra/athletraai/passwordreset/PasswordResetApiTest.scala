@@ -86,7 +86,7 @@ class PasswordResetApiTest extends BaseTest with Eventually with TestDependencie
     dependencies.emailService.sendBatch()
 
     val emailData = DummyEmailSender
-      .findSentEmail(email, "SoftwareMill Athletraai password reset")
+      .findSentEmail(email, "Athletra AI password reset")
       .getOrElse(throw new IllegalStateException(s"No password reset email sent to $email!"))
 
     codeFromResetPasswordEmail(emailData.content)
@@ -96,7 +96,7 @@ class PasswordResetApiTest extends BaseTest with Eventually with TestDependencie
   def codeWasNotSentToEmail(email: String): Unit =
     dependencies.emailService.sendBatch()
 
-    val maybeEmail = DummyEmailSender.findSentEmail(email, "SoftwareMill Athletraai password reset")
+    val maybeEmail = DummyEmailSender.findSentEmail(email, "Athletra AI password reset")
     maybeEmail match
       case Some(emailData) =>
         throw new IllegalStateException(s"There should be no password reset email sent to $email, but instead found $emailData")

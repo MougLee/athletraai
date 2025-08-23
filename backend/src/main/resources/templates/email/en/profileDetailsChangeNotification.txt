@@ -1,0 +1,4 @@
+Athletra AI - profile details change notification
+Dear {{userName}},
+
+Your profile data has been updated.

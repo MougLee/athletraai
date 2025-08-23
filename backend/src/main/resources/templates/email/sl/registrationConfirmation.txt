@@ -1,0 +1,6 @@
+Athletra AI - potrditev registracije za uporabnika {{userName}}
+Spoštovani {{userName}},
+
+Hvala za registracijo v naši aplikaciji.
+
+

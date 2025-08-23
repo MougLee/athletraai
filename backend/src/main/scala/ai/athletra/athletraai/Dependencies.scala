@@ -4,7 +4,7 @@ import ai.athletra.athletraai.admin.VersionApi
 import ai.athletra.athletraai.config.Config
 import ai.athletra.athletraai.email.EmailService
 import ai.athletra.athletraai.email.sender.EmailSender
-import ai.athletra.athletraai.http.{HttpApi, HttpConfig}
+import ai.athletra.athletraai.http.{HttpApi, HttpConfig, MessageService}
 import ai.athletra.athletraai.infrastructure.DB
 import ai.athletra.athletraai.metrics.Metrics
 import ai.athletra.athletraai.passwordreset.{PasswordResetApi, PasswordResetAuthToken}
@@ -51,6 +51,7 @@ object Dependencies:
       db,
       DefaultIdGenerator,
       clock,
+      MessageService.instance,
       EmailSender.create,
       (apis: Apis, otel: OpenTelemetry, httpConfig: HttpConfig) =>
         new HttpApi(apis.endpoints, Dependencies.endpointsForDocs, otel, httpConfig),

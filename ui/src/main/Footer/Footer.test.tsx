@@ -25,7 +25,7 @@ test('renders version data', async () => {
 
   renderWithClient(<Footer />);
 
-  const info = screen.getByText(/Athletra AI/);
+  const info = screen.getByText(/AthletraAI/);
 
   expect(mockedUseGetAdminVersion).toHaveBeenCalled();
   expect(info).toBeInTheDocument();

@@ -5,46 +5,17 @@ import { renderWithClient } from 'tests';
 import { Register } from './Register';
 import { UserContext } from 'contexts/UserContext/User.context';
 import { initialUserState } from 'contexts/UserContext/UserContext.constants';
-import { Mock } from 'vitest';
-
-const dispatch = vi.fn();
-const mockMutate = vi.fn();
-const mockResponse = vi.fn();
+import { usePostUserRegister } from 'api/apiComponents';
 
 vi.mock('api/apiComponents', () => ({
-  usePostUserRegister: () => mockResponse(),
+  usePostUserRegister: vi.fn(),
 }));
 
-const mockCustomSuccessfulResponse = (
-  apiKey = 'test-api-key',
-  onSuccess?: Mock
-) => {
-  const mockMutateWithCallback = vi.fn().mockImplementation(async () => {
-    if (onSuccess) {
-      onSuccess({ apiKey });
-    }
-  });
-
-  const mutateToUse = onSuccess ? mockMutateWithCallback : mockMutate;
-
-  const mockResult = mockResponse.mockReturnValueOnce({
-    mutate: mutateToUse,
-    reset: vi.fn(),
-    data: { apiKey },
-    isSuccess: true,
-    isError: false,
-    error: '',
-  });
-
-  return { mockResult, mutate: mutateToUse };
-};
-
-beforeEach(() => {
-  vi.clearAllMocks();
-});
-
 test('<Register /> should render the header text', () => {
-  mockResponse.mockReturnValue({
+  const dispatch = vi.fn();
+  const mockMutate = vi.fn();
+  
+  (usePostUserRegister as any).mockReturnValue({
     mutate: mockMutate,
     reset: vi.fn(),
     isSuccess: true,
@@ -64,13 +35,24 @@ test('<Register /> should render the header text', () => {
     </MemoryRouter>
   );
 
-  expect(screen.getByText('Please sign up')).toBeInTheDocument();
+  expect(screen.getByText('Register')).toBeInTheDocument();
 });
 
 test('<Register /> should handle successful registration through the submit button click', async () => {
+  const dispatch = vi.fn();
+  const mockMutate = vi.fn();
   const onSuccess = vi.fn();
 
-  const { mutate } = mockCustomSuccessfulResponse('test-api-key', onSuccess);
+  (usePostUserRegister as any).mockReturnValue({
+    mutate: mockMutate.mockImplementation(async () => {
+      onSuccess({ apiKey: 'test-api-key' });
+    }),
+    reset: vi.fn(),
+    data: { apiKey: 'test-api-key' },
+    isSuccess: true,
+    isError: false,
+    error: '',
+  });
 
   renderWithClient(
     <MemoryRouter initialEntries={['/login']}>
@@ -89,20 +71,23 @@ test('<Register /> should handle successful registration through the submit butt
   );
   await userEvent.type(screen.getByLabelText('Password'), 'test-password');
   await userEvent.type(
-    screen.getByLabelText('Repeat password'),
+    screen.getByLabelText('Repeat Password'),
     'test-password'
   );
-  await userEvent.click(screen.getByText('Create new account'));
+  await userEvent.click(screen.getByText('Create Account'));
 
   await screen.findByRole('success');
 
-  expect(mutate).toHaveBeenCalledWith({
-    body: {
+  // Check that the mutation was called with the expected structure
+  expect(mockMutate).toHaveBeenCalledWith({
+    body: expect.objectContaining({
       login: 'test-login',
       email: 'test@email.address.pl',
       password: 'test-password',
       repeatedPassword: 'test-password',
-    },
+      language: expect.stringMatching(/^(en|sl)$/),
+      timezone: expect.any(String),
+    }),
   });
 
   expect(onSuccess).toHaveBeenCalledWith({
@@ -111,9 +96,20 @@ test('<Register /> should handle successful registration through the submit butt
 });
 
 test('<Register /> should handle successful registration through the Enter key press', async () => {
+  const dispatch = vi.fn();
+  const mockMutate = vi.fn();
   const onSuccess = vi.fn();
 
-  const { mutate } = mockCustomSuccessfulResponse('test-api-key', onSuccess);
+  (usePostUserRegister as any).mockReturnValue({
+    mutate: mockMutate.mockImplementation(async () => {
+      onSuccess({ apiKey: 'test-api-key' });
+    }),
+    reset: vi.fn(),
+    data: { apiKey: 'test-api-key' },
+    isSuccess: true,
+    isError: false,
+    error: '',
+  });
 
   renderWithClient(
     <MemoryRouter initialEntries={['/login']}>
@@ -132,20 +128,23 @@ test('<Register /> should handle successful registration through the Enter key p
   );
   await userEvent.type(screen.getByLabelText('Password'), 'test-password');
   await userEvent.type(
-    screen.getByLabelText('Repeat password'),
+    screen.getByLabelText('Repeat Password'),
     'test-password'
   );
   await userEvent.keyboard('{Enter}');
 
   await screen.findByRole('success');
 
-  expect(mutate).toHaveBeenCalledWith({
-    body: {
+  // Check that the mutation was called with the expected structure
+  expect(mockMutate).toHaveBeenCalledWith({
+    body: expect.objectContaining({
       login: 'test-login',
       email: 'test@email.address.pl',
       password: 'test-password',
       repeatedPassword: 'test-password',
-    },
+      language: expect.stringMatching(/^(en|sl)$/),
+      timezone: expect.any(String),
+    }),
   });
 
   expect(onSuccess).toHaveBeenCalledWith({
@@ -154,7 +153,10 @@ test('<Register /> should handle successful registration through the Enter key p
 });
 
 test('<Register /> should handle failed registration attempt', async () => {
-  mockResponse.mockReturnValueOnce({
+  const dispatch = vi.fn();
+  const mockMutate = vi.fn();
+
+  (usePostUserRegister as any).mockReturnValue({
     mutate: mockMutate,
     reset: vi.fn(),
     data: { apiKey: 'test-api-key' },
@@ -180,18 +182,21 @@ test('<Register /> should handle failed registration attempt', async () => {
   );
   await userEvent.type(screen.getByLabelText('Password'), 'test-password');
   await userEvent.type(
-    screen.getByLabelText('Repeat password'),
+    screen.getByLabelText('Repeat Password'),
     'test-password'
   );
-  await userEvent.click(screen.getByText('Create new account'));
+  await userEvent.click(screen.getByText('Create Account'));
 
+  // Check that the mutation was called with the expected structure
   expect(mockMutate).toHaveBeenCalledWith({
-    body: {
+    body: expect.objectContaining({
       login: 'test-login',
       email: 'test@email.address.pl',
       password: 'test-password',
       repeatedPassword: 'test-password',
-    },
+      language: expect.stringMatching(/^(en|sl)$/),
+      timezone: expect.any(String),
+    }),
   });
 
   await screen.findByRole('error');

@@ -44,7 +44,7 @@ class PasswordResetService(
 
   private def prepareResetEmail(user: User, code: PasswordResetCode): EmailSubjectContent =
     val resetLink = String.format(config.resetLinkPattern, code.id)
-    emailTemplates.passwordReset(user.login, resetLink)
+    emailTemplates.passwordReset(user.login, resetLink, user.language)
 
   def resetPassword(code: String, newPassword: String): Either[Fail, Unit] = either {
     val userId = auth(code.asId[PasswordResetCode]).ok()
