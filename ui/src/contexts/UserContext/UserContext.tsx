@@ -7,7 +7,20 @@ export interface UserDetails {
   createdOn: string;
   email: string;
   login: string;
+  language?: string;
+  timezone?: string;
+  unitSystem?: string;
 }
+
+// Helper function to map backend field names to frontend field names
+export const mapBackendUserToFrontend = (backendUser: any): UserDetails => ({
+  createdOn: backendUser.createdOn,
+  email: backendUser.email,
+  login: backendUser.login,
+  language: backendUser.language,
+  timezone: backendUser.timezone,
+  unitSystem: backendUser.unitSystem,
+});
 
 export interface UserState {
   user: UserDetails | null;

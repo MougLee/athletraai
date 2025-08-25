@@ -64,7 +64,15 @@
     "title": "Profile details",
     "notAvailable": "Profile details not available.",
     "updateButton": "Update profile data",
-    "updateSuccess": "Profile details changed"
+    "updateSuccess": "Profile details changed",
+    "personalInfo": "Personal Information",
+    "preferences": "Preferences",
+    "language": "Language",
+    "timezone": "Timezone",
+    "units": "Units",
+    "languageHelp": "Select your preferred language for the application",
+    "timezoneHelp": "Select your timezone for accurate time display",
+    "unitsHelp": "Select your preferred measurement system"
   },
   "passwordReset": {
     "title": "Recover lost password",

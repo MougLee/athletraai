@@ -44,11 +44,11 @@ class UserApi(auth: Auth[ApiKey], userService: UserService, db: DB, metrics: Met
 
   private val getUserServerEndpoint = authedEndpoint(getUserEndpoint).handle { id => (_: Unit) =>
     val userResult = db.transactEither(userService.findById(id))
-    userResult.map(user => GetUser_OUT(user.login, user.emailLowerCase, user.createdAt))
+    userResult.map(user => GetUser_OUT(user.login, user.emailLowerCase, user.language, user.timezone, user.unitSystem, user.createdAt))
   }
 
   private val updateUserServerEndpoint = authedEndpoint(updateUserEndpoint).handle { id => data =>
-    db.transactEither(userService.changeUser(id, data.login, data.email, data.language, data.timezone)).map(_ => UpdateUser_OUT())
+    db.transactEither(userService.changeUser(id, data.login, data.email, data.language, data.timezone, data.unitSystem)).map(_ => UpdateUser_OUT())
   }
 
   override val endpoints = List(
@@ -122,8 +122,21 @@ object UserApi extends EndpointsForDocs:
   case class Logout_IN(apiKey: String) derives ConfiguredJsonValueCodec, Schema
   case class Logout_OUT() derives ConfiguredJsonValueCodec, Schema
 
-  case class UpdateUser_IN(login: String, email: String, language: Option[String] = None, timezone: Option[String] = None) derives ConfiguredJsonValueCodec, Schema
+  case class UpdateUser_IN(
+    login: String,
+    email: String,
+    language: Option[String] = None,
+    timezone: Option[String] = None,
+    unitSystem: Option[String] = None
+  ) derives ConfiguredJsonValueCodec, Schema
   case class UpdateUser_OUT() derives ConfiguredJsonValueCodec, Schema
 
-  case class GetUser_OUT(login: String, email: String, createdOn: Instant) derives ConfiguredJsonValueCodec, Schema
+  case class GetUser_OUT(
+    login: String,
+    email: String,
+    language: String,
+    timezone: String,
+    unitSystem: String,
+    createdOn: Instant
+  ) derives ConfiguredJsonValueCodec, Schema
 end UserApi

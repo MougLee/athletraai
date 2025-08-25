@@ -7,4 +7,12 @@ export const validationSchema = Yup.object({
   email: Yup.string()
     .email('Valid email address required')
     .required('Required'),
+  language: Yup.string()
+    .oneOf(['en', 'sl'], 'Invalid language selection')
+    .required('Required'),
+  timezone: Yup.string()
+    .required('Required'),
+  unitSystem: Yup.string()
+    .oneOf(['metric', 'imperial'], 'Invalid units selection')
+    .required('Required'),
 });

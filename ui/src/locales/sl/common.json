@@ -64,7 +64,15 @@
     "title": "Podrobnosti profila",
     "notAvailable": "Podrobnosti profila niso na voljo.",
     "updateButton": "Posodobi podatke profila",
-    "updateSuccess": "Podrobnosti profila so bile spremenjene"
+    "updateSuccess": "Podrobnosti profila so bile spremenjene",
+    "personalInfo": "Osebne informacije",
+    "preferences": "Nastavitve",
+    "language": "Jezik",
+    "timezone": "Časovni pas",
+    "units": "Enota",
+    "languageHelp": "Izberite želeni jezik za aplikacijo",
+    "timezoneHelp": "Izberite vaš časovni pas za natančen prikaz časa",
+    "unitsHelp": "Izberite želeni sistem mer"
   },
   "passwordReset": {
     "title": "Obnovi pozabljeno geslo",

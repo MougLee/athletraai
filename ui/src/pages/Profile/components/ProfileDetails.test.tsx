@@ -11,6 +11,9 @@ const loggedUserState: UserState = {
     login: 'user-login',
     email: 'email@address.pl',
     createdOn: '2020-10-09T09:57:17.995288Z',
+    language: 'en',
+    timezone: 'UTC',
+    unitSystem: 'metric',
   },
 };
 vi.mock('api/apiComponents', () => ({
@@ -27,7 +30,7 @@ beforeEach(() => {
 test('<ProfileDetails /> should render current user data', () => {
   const dispatch = vi.fn();
   const mockMutate = vi.fn();
-  
+
   (usePostUser as any).mockReturnValue({
     mutate: mockMutate,
     reset: vi.fn(),
@@ -54,7 +57,7 @@ test('<ProfileDetails /> should render current user data', () => {
 test('<ProfileDetails /> should not render any existing user data', () => {
   const dispatch = vi.fn();
   const mockMutate = vi.fn();
-  
+
   (usePostUser as any).mockReturnValue({
     mutate: mockMutate,
     reset: vi.fn(),
@@ -76,11 +79,18 @@ test('<ProfileDetails /> should not render any existing user data', () => {
 test('<ProfileDetails /> should handle details update successfully', async () => {
   const dispatch = vi.fn();
   const mockMutate = vi.fn();
-  
+
   (usePostUser as any).mockReturnValue({
     mutate: mockMutate,
     reset: vi.fn(),
-    data: { apiKey: 'test-api-key' },
+    data: {
+      login: 'test-login',
+      email: 'test@email.address',
+      language: 'en',
+      timezone: 'UTC',
+      unitSystem: 'metric',
+      createdOn: '2020-10-09T09:57:17.995288Z'
+    },
     isSuccess: true,
     isError: false,
     error: '',
@@ -102,12 +112,25 @@ test('<ProfileDetails /> should handle details update successfully', async () =>
   await userEvent.click(screen.getByText('Update profile data'));
 
   expect(mockMutate).toHaveBeenCalledWith({
-    body: { email: 'test@email.address', login: 'test-login' },
+    body: {
+      email: 'test@email.address',
+      login: 'test-login',
+      language: 'en',
+      timezone: 'UTC',
+      unitSystem: 'metric'
+    },
   });
 
   expect(dispatch).toHaveBeenCalledWith({
     type: 'UPDATE_USER_DATA',
-    user: { apiKey: 'test-api-key' },
+    user: {
+      login: 'test-login',
+      email: 'test@email.address',
+      language: 'en',
+      timezone: 'UTC',
+      unitSystem: 'metric',
+      createdOn: '2020-10-09T09:57:17.995288Z'
+    },
   });
 
   await screen.findByRole('success');
@@ -117,11 +140,18 @@ test('<ProfileDetails /> should handle details update successfully', async () =>
 test('<ProfileDetails /> should handle details update error', async () => {
   const dispatch = vi.fn();
   const mockMutate = vi.fn();
-  
+
   (usePostUser as any).mockReturnValue({
     mutate: mockMutate,
     reset: vi.fn(),
-    data: { apiKey: 'test-api-key' },
+    data: {
+      login: 'test-login',
+      email: 'test@email.address',
+      language: 'en',
+      timezone: 'UTC',
+      unitSystem: 'metric',
+      createdOn: '2020-10-09T09:57:17.995288Z'
+    },
     isSuccess: true,
     isError: true,
     error: 'Test error',
@@ -143,11 +173,24 @@ test('<ProfileDetails /> should handle details update error', async () => {
   await userEvent.click(screen.getByText('Update profile data'));
 
   expect(mockMutate).toHaveBeenCalledWith({
-    body: { email: 'test@email.address', login: 'test-login' },
+    body: {
+      email: 'test@email.address',
+      login: 'test-login',
+      language: 'en',
+      timezone: 'UTC',
+      unitSystem: 'metric'
+    },
   });
   expect(dispatch).toHaveBeenCalledWith({
     type: 'UPDATE_USER_DATA',
-    user: { apiKey: 'test-api-key' },
+    user: {
+      login: 'test-login',
+      email: 'test@email.address',
+      language: 'en',
+      timezone: 'UTC',
+      unitSystem: 'metric',
+      createdOn: '2020-10-09T09:57:17.995288Z'
+    },
   });
   expect(await screen.findByRole('error')).toBeInTheDocument();
 });

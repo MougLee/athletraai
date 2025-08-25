@@ -134,14 +134,89 @@ class UserServiceTest extends BaseTest with TestDependencies with EitherValues:
   it should "handle user update with language context" in {
     val userService = createUserService()
     
-    // Register a user first
-    val registerResult = currentDb.transactEither(userService.registerNewUser("testuser", "test@example.com", "password123", "sl"))
+    // First register a user
+    val registerResult = currentDb.transactEither(userService.registerNewUser("testuser", "test@example.com", "password123"))
     registerResult shouldBe a[Right[?, ?]]
     
     val userId = registerResult.value.userId
     
     // Update user should work
     val updateResult = currentDb.transactEither(userService.changeUser(userId, "newlogin", "newemail@example.com", Some("en"), None))
+    updateResult shouldBe a[Right[?, ?]]
+  }
+
+  it should "update user unit system preference" in {
+    val userService = createUserService()
+    
+    // First register a user
+    val registerResult = currentDb.transactEither(userService.registerNewUser("testuser", "test@example.com", "password123"))
+    registerResult shouldBe a[Right[?, ?]]
+    
+    val userId = registerResult.value.userId
+    
+    // Update unit system using changeUser
+    val updateResult = currentDb.transactEither(userService.changeUser(userId, "testuser", "test@example.com", None, None, Some("imperial")))
+    updateResult shouldBe a[Right[?, ?]]
+  }
+
+  it should "reject unsupported unit system" in {
+    val userService = createUserService()
+    
+    // First register a user
+    val registerResult = currentDb.transactEither(userService.registerNewUser("testuser", "test@example.com", "password123"))
+    registerResult shouldBe a[Right[?, ?]]
+    
+    val userId = registerResult.value.userId
+    
+    // Try to update to unsupported unit system using changeUser
+    val updateResult = currentDb.transactEither(userService.changeUser(userId, "testuser", "test@example.com", None, None, Some("invalid")))
+    updateResult shouldBe a[Left[?, ?]] // changeUser should validate and reject unsupported unit systems
+    updateResult.left.value shouldBe a[Fail.IncorrectInput]
+  }
+
+  it should "accept valid unit system values" in {
+    val userService = createUserService()
+    
+    // First register a user
+    val registerResult = currentDb.transactEither(userService.registerNewUser("testuser", "test@example.com", "password123"))
+    registerResult shouldBe a[Right[?, ?]]
+    
+    val userId = registerResult.value.userId
+    
+    // Update to metric should work
+    val updateResult1 = currentDb.transactEither(userService.changeUser(userId, "testuser", "test@example.com", None, None, Some("metric")))
+    updateResult1 shouldBe a[Right[?, ?]]
+    
+    // Update to imperial should work
+    val updateResult2 = currentDb.transactEither(userService.changeUser(userId, "testuser", "test@example.com", None, None, Some("imperial")))
+    updateResult2 shouldBe a[Right[?, ?]]
+  }
+
+  it should "update unit system with other fields" in {
+    val userService = createUserService()
+    
+    // First register a user
+    val registerResult = currentDb.transactEither(userService.registerNewUser("testuser", "test@example.com", "password123"))
+    registerResult shouldBe a[Right[?, ?]]
+    
+    val userId = registerResult.value.userId
+    
+    // Update multiple fields including unit system
+    val updateResult = currentDb.transactEither(userService.changeUser(userId, "newlogin", "newemail@example.com", Some("sl"), Some("UTC"), Some("imperial")))
+    updateResult shouldBe a[Right[?, ?]]
+  }
+
+  it should "handle unit system update without changing other fields" in {
+    val userService = createUserService()
+    
+    // First register a user
+    val registerResult = currentDb.transactEither(userService.registerNewUser("testuser", "test@example.com", "password123"))
+    registerResult shouldBe a[Right[?, ?]]
+    
+    val userId = registerResult.value.userId
+    
+    // Update only unit system, keeping other fields unchanged
+    val updateResult = currentDb.transactEither(userService.changeUser(userId, "testuser", "test@example.com", None, None, Some("imperial")))
     updateResult shouldBe a[Right[?, ?]]
   }
 

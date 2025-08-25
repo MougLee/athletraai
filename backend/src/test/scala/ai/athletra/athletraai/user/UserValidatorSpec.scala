@@ -2,8 +2,19 @@ package ai.athletra.athletraai.user
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import ai.athletra.athletraai.http.MessageService
 
 class UserValidatorSpec extends AnyFlatSpec with Matchers:
+  // Create a mock MessageService for testing
+  private val mockMessageService = new MessageService:
+    override def getMessage(key: String, language: String, args: Any*): String = 
+      key match
+        case "user.error.loginTooShort" => "Login is too short!"
+        case "user.error.invalidEmail" => "Invalid e-mail format!"
+        case "user.error.passwordEmpty" => "Password cannot be empty!"
+        case "validation.unsupportedLanguage" => s"Unsupported language: ${args.head}"
+        case _ => key
+
   // Create a minimal UserService instance for testing
   private val userService = new UserService(
     userModel = null, // Not used in validation tests
@@ -13,11 +24,11 @@ class UserValidatorSpec extends AnyFlatSpec with Matchers:
     idGenerator = null, // Not used in validation tests
     clock = null, // Not used in validation tests
     config = null, // Not used in validation tests
-    messageService = null // Not used in validation tests
+    messageService = mockMessageService
   )
 
   private def validate(userName: String, email: String, password: String) = 
-    userService.validateUserData(Some(userName), Some(email), Some(password))
+    userService.validateUserData(Some(userName), Some(email), Some(password), languageOpt = Some("en"))
 
   "validate" should "accept valid data" in:
     val dataIsValid = validate("login", "admin@athletraai.com", "password")

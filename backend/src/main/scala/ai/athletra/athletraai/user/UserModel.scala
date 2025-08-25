@@ -47,6 +47,10 @@ class UserModel:
     sql"""UPDATE $u SET timezone = $newTimezone WHERE ${u.id} = $userId""".update.run().discard
   end updateTimezone
 
+  def updateUnitSystem(userId: Id[User], newUnitSystem: String)(using DbTx): Unit =
+    sql"""UPDATE $u SET unit_system = $newUnitSystem WHERE ${u.id} = $userId""".update.run().discard
+  end updateUnitSystem
+
 end UserModel
 
 @Table(PostgresDbType, SqlNameMapper.CamelToSnakeCase)

@@ -25,6 +25,9 @@ export type ForgotPasswordOUT = Record<string, any>;
 export type GetUserOUT = {
   login: string;
   email: string;
+  language: string;
+  timezone: string;
+  unitSystem: string;
   /**
    * @format date-time
    */
@@ -74,6 +77,7 @@ export type UpdateUserIN = {
   email: string;
   language?: string;
   timezone?: string;
+  unitSystem?: string;
 };
 
 export type UpdateUserOUT = Record<string, any>;

@@ -10,7 +10,10 @@ import { FormikInput, FeedbackButton } from 'components';
 import { usePostUser } from 'api/apiComponents';
 import { validationSchema } from './ProfileDetails.validations';
 import { useUserContext } from 'contexts/UserContext/User.context';
+import { mapBackendUserToFrontend } from 'contexts/UserContext/UserContext';
 import { useTranslation } from 'react-i18next';
+import { PreferencesSection } from './PreferencesSection';
+import { detectBrowserTimezone } from '../../../utils/preferences';
 
 export type ProfileDetailsParams = Yup.InferType<typeof validationSchema>;
 
@@ -26,7 +29,9 @@ export const ProfileDetails = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      dispatch({ type: 'UPDATE_USER_DATA', user: data });
+      // Map the backend response to frontend format
+      const mappedUser = mapBackendUserToFrontend(data);
+      dispatch({ type: 'UPDATE_USER_DATA', user: mappedUser });
     }
   }, [isSuccess, dispatch, data]);
 
@@ -41,13 +46,23 @@ export const ProfileDetails = () => {
                 initialValues={{
                   login: user.login || '',
                   email: user.email || '',
+                  language: (user.language as 'en' | 'sl') || 'en',
+                  timezone: user.timezone || detectBrowserTimezone(),
+                  unitSystem: (user.unitSystem as 'metric' | 'imperial') || 'metric',
                 }}
                 onSubmit={(values) => mutation.mutate({ body: values })}
                 validationSchema={validationSchema}
               >
                 <Form as={FormikForm}>
+                  <h4 className="mb-3">{t('profile.personalInfo', { defaultValue: 'Personal Information' })}</h4>
                   <FormikInput name="login" label={t('register.login', { ns: 'auth' })} />
                   <FormikInput name="email" label={t('register.email', { ns: 'auth' })} />
+
+                  <PreferencesSection
+                    onLanguageChange={() => {
+                      // This will be handled by Formik when the form is submitted
+                    }}
+                  />
 
                   <FeedbackButton
                     className="float-end"

@@ -15,7 +15,9 @@ class Requests(backend: SyncBackend):
   private val random = new Random()
 
   def randomLoginEmailPassword(): (String, String, String) =
-    (random.nextString(12), s"user${random.nextInt(9000)}@athletraai.com", random.nextString(12))
+    val timestamp = System.currentTimeMillis()
+    val randomSuffix = random.nextInt(9000)
+    (s"testuser${timestamp}${randomSuffix}", s"user${timestamp}${randomSuffix}@athletraai.com", s"password${timestamp}${randomSuffix}")
 
   private val basePath = Some(uri"http://localhost:8080/api/v1")
 
@@ -83,6 +85,13 @@ class Requests(backend: SyncBackend):
       .toSecureRequestThrowDecodeFailures(UserApi.updateUserEndpoint, basePath)
       .apply(apiKey.asId)
       .apply(UpdateUser_IN(login, email, language, timezone))
+      .send(backend)
+
+  def updateUser(apiKey: String, login: String, email: String, language: Option[String], timezone: Option[String], unitSystem: Option[String]): Response[Either[Fail, UpdateUser_OUT]] =
+    SttpClientInterpreter()
+      .toSecureRequestThrowDecodeFailures(UserApi.updateUserEndpoint, basePath)
+      .apply(apiKey.asId)
+      .apply(UpdateUser_IN(login, email, language, timezone, unitSystem))
       .send(backend)
 
   def forgotPassword(loginOrEmail: String): Response[Either[Fail, ForgotPassword_OUT]] =

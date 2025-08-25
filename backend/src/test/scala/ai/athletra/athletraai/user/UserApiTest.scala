@@ -391,7 +391,7 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ei
 
     // then
     response.code shouldBe StatusCode.BadRequest
-    response.body shouldBe Left(Fail.IncorrectInput("Unsupported language: fr"))
+    response.body shouldBe Left(Fail.IncorrectInput("Unsupported language: fr. Please use one of the following: en, sl"))
   }
 
   "/users/me/language" should "respond with 401 if unauthorized" in {
@@ -413,6 +413,90 @@ class UserApiTest extends BaseTest with Eventually with TestDependencies with Ei
     // when & then - Slovene
     val response2 = requests.updateUser(apiKey, login, email, Some("sl"), None)
     response2.code shouldBe StatusCode.Ok
+  }
+
+  "/users/me/unitSystem" should "update user unit system preference" in {
+    // given
+    val RegisteredUser(login, email, _, apiKey) = requests.newRegisteredUsed()
+
+    // when
+    val response = requests.updateUser(apiKey, login, email, None, None, Some("imperial"))
+
+    // then
+    response.code shouldBe StatusCode.Ok
+    response.body should matchPattern { case Right(_) => }
+  }
+
+  "/users/me/unitSystem" should "not update unit system if unit system is unsupported" in {
+    // given
+    val RegisteredUser(login, email, _, apiKey) = requests.newRegisteredUsed()
+
+    // when
+    val response = requests.updateUser(apiKey, login, email, None, None, Some("invalid"))
+
+    // then
+    response.code shouldBe StatusCode.BadRequest
+    response.body shouldBe Left(Fail.IncorrectInput("Unsupported unit system: invalid"))
+  }
+
+  "/users/me/unitSystem" should "respond with 401 if unauthorized" in {
+    // when
+    val response = requests.updateUser("invalid", "testuser", "test@example.com", None, None, Some("metric"))
+
+    // then
+    response.code shouldBe StatusCode.Unauthorized
+  }
+
+  "/users/me/unitSystem" should "accept valid unit system codes" in {
+    // given
+    val RegisteredUser(login, email, _, apiKey) = requests.newRegisteredUsed()
+
+    // when & then - Metric
+    val response1 = requests.updateUser(apiKey, login, email, None, None, Some("metric"))
+    response1.code shouldBe StatusCode.Ok
+
+    // when & then - Imperial
+    val response2 = requests.updateUser(apiKey, login, email, None, None, Some("imperial"))
+    response2.code shouldBe StatusCode.Ok
+  }
+
+  "/users/me/unitSystem" should "update unit system with other fields" in {
+    // given
+    val RegisteredUser(login, email, _, apiKey) = requests.newRegisteredUsed()
+
+    // when - Update only unit system, keeping login and email unchanged
+    val response = requests.updateUser(apiKey, login, email, Some("sl"), Some("UTC"), Some("imperial"))
+
+    // then
+    response.code shouldBe StatusCode.Ok
+    response.body should matchPattern { case Right(_) => }
+
+    // Verify the changes were applied by checking the user data
+    val getUserResponse = requests.getUser(apiKey)
+    getUserResponse.code shouldBe StatusCode.Ok
+    getUserResponse.body.value.login shouldBe login
+    getUserResponse.body.value.email shouldBe email
+  }
+
+  "/users/me" should "update login and email separately from unit system" in {
+    // given
+    val RegisteredUser(login, email, _, apiKey) = requests.newRegisteredUsed()
+    val newLogin = "newlogin" + System.currentTimeMillis() // Ensure uniqueness
+    val newEmail = "newemail" + System.currentTimeMillis() + "@example.com" // Ensure uniqueness
+
+    // when - Update login and email first
+    val response1 = requests.updateUser(apiKey, newLogin, newEmail)
+    response1.code shouldBe StatusCode.Ok
+
+    // then - Update unit system separately
+    val response2 = requests.updateUser(apiKey, newLogin, newEmail, None, None, Some("imperial"))
+    response2.code shouldBe StatusCode.Ok
+
+    // Verify all changes were applied
+    val getUserResponse = requests.getUser(apiKey)
+    getUserResponse.code shouldBe StatusCode.Ok
+    getUserResponse.body.value.login shouldBe newLogin
+    getUserResponse.body.value.email shouldBe newEmail
   }
 
 end UserApiTest

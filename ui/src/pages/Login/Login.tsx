@@ -1,44 +1,43 @@
-import { Link } from 'react-router';
+import { Link, useNavigate, useLocation } from 'react-router';
 import Form from 'react-bootstrap/Form';
 import { BiLogInCircle } from 'react-icons/bi';
 import { Formik, Form as FormikForm } from 'formik';
 import * as Yup from 'yup';
 import { TwoColumnHero, FormikInput, FeedbackButton } from 'components';
 import { validationSchema } from './Login.validations';
-import { useApiKeyState } from 'hooks/auth';
-import { useGetUser, usePostUserLogin } from 'api/apiComponents';
+import { useApiKeyState, useAuth } from 'hooks/auth';
+import { usePostUserLogin } from 'api/apiComponents';
 import { useEffect } from 'react';
-import { useUserContext } from 'contexts/UserContext/User.context';
 import { useTranslation } from 'react-i18next';
 
 export type LoginParams = Yup.InferType<typeof validationSchema>;
 
 export const Login = () => {
-  const [apiKeyState, setApiKeyState] = useApiKeyState();
+  const [, setApiKeyState] = useApiKeyState();
   const { t } = useTranslation('auth');
-  const { dispatch } = useUserContext();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const apiKey = apiKeyState?.apiKey;
+  // useAuth now handles both authentication and user data fetching
+  const { user, isAuthenticated } = useAuth();
+
+  // Get the intended destination from location state, or default to /main
+  const from = (location.state as { from?: Location })?.from?.pathname || '/main';
 
   const mutation = usePostUserLogin({
     onSuccess: ({ apiKey }) => {
       setApiKeyState({ apiKey });
+      // useAuth will automatically fetch user data and update context
+      // The redirect will happen automatically once the user context is updated
     },
   });
 
-  const { data: user, isSuccess } = useGetUser(
-    apiKey ? { headers: { Authorization: `Bearer ${apiKey}` } } : {},
-    {
-      enabled: Boolean(apiKey),
-      retry: false,
-    }
-  );
-
+  // Redirect to the intended destination once user data is loaded
   useEffect(() => {
-    if (isSuccess) {
-      dispatch({ type: 'LOG_IN', user });
+    if (isAuthenticated && user) {
+      navigate(from, { replace: true });
     }
-  }, [user, dispatch, isSuccess]);
+  }, [user, isAuthenticated, navigate, from]);
 
   return (
     <TwoColumnHero>

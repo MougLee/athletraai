@@ -44,7 +44,6 @@ CREATE TABLE IF NOT EXISTS user_profile_assessments (
   -- Snapshot fields captured at assessment time
   activity_level           VARCHAR(50),     -- e.g. sedentary/light/moderate/high
   experience_level         VARCHAR(50),     -- e.g. novice/intermediate/advanced
-  fitness_level            VARCHAR(50),     -- self-assessed label
   has_consistent_training  BOOLEAN,
   inactivity_duration      VARCHAR(50),     -- keep free-text for MVP
   consistency_issues       TEXT,

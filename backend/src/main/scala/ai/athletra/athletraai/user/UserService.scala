@@ -4,7 +4,7 @@ import com.augustnagro.magnum.DbTx
 import ai.athletra.athletraai.*
 import ai.athletra.athletraai.email.{EmailData, EmailScheduler, EmailTemplates}
 import ai.athletra.athletraai.http.LanguageContext
-import ai.athletra.athletraai.http.LanguageContext.DefaultLanguage
+import ai.athletra.athletraai.http.LanguageContext.{DefaultLanguage, SupportedLanguages}
 import ai.athletra.athletraai.http.MessageService
 import ai.athletra.athletraai.logging.Logging
 import ai.athletra.athletraai.security.{ApiKey, ApiKeyService}
@@ -30,7 +30,7 @@ class UserService(
   private val EmailAlreadyUsed = "user.error.emailAlreadyUsed"
   private val IncorrectLoginOrPassword = "user.error.incorrectLoginOrPassword"
 
-  def registerNewUser(login: String, email: String, password: String, language: String = "en", timezone: String = "UTC")(using
+  def registerNewUser(login: String, email: String, password: String, language: String = DefaultLanguage, timezone: String = "UTC")(using
       DbTx
   ): Either[Fail, ApiKey] =
     val loginClean = login.trim()
@@ -38,7 +38,7 @@ class UserService(
     
     // Validate language and reject unsupported languages
     if !LanguageContext.isSupported(language) then
-      return Left(Fail.IncorrectInput(messageService.getMessage("user.error.unsupportedLanguage", language, language)))
+      return Left(Fail.IncorrectInput(messageService.getMessage("validation.unsupportedLanguage", language, language, SupportedLanguages.mkString(", "))))
 
     def failIfDefined(op: Option[User], msgKey: String): Either[Fail, Unit] =
       if op.isDefined then Left(Fail.IncorrectInput(messageService.getMessage(msgKey, language))) else Right(())
@@ -72,7 +72,7 @@ class UserService(
     end doRegister
 
     either:
-      validateUserData(Some(loginClean), Some(emailClean), Some(password)).ok()
+      validateUserData(Some(loginClean), Some(emailClean), Some(password), Some(language)).ok()
       // performing explicit checks in the DB to get nice, user-friendly error messages
       checkUserDoesNotExist().ok()
       doRegister()
@@ -88,22 +88,26 @@ class UserService(
 
   def logout(id: Id[ApiKey])(using DbTx): Unit = apiKeyService.invalidate(id)
 
-  def changeUser(userId: Id[User], newLogin: String, newEmail: String, language: Option[String] = None, timezone: Option[String] = None)(
-      using DbTx
-  ): Either[Fail, Unit] =
+  def changeUser(
+    userId: Id[User],
+    newLogin: String,
+    newEmail: String,
+    language: Option[String] = None,
+    timezone: Option[String] = None,
+    unitSystem: Option[String] = None
+  )(using DbTx): Either[Fail, Unit] =
     val newLoginClean = newLogin.trim()
     val newEmailClean = newEmail.trim()
     val newEmailtoLowerCased = newEmailClean.toLowerCased
 
-    // Get user to access their language for error messages
-    val currentUser =
-      findById(userId).getOrElse(throw new RuntimeException(messageService.getMessage("user.does.not.exists", DefaultLanguage)))
-    val userLanguage = currentUser.language
+    val lang = language.getOrElse {
+      findById(userId).map(_.language).getOrElse(throw new RuntimeException(messageService.getMessage("user.does.not.exists", DefaultLanguage)))
+    }
 
     def changeLogin(): Either[Fail, Boolean] =
       val newLoginToLowerCased = newLoginClean.toLowerCased
       userModel.findByLogin(newLoginToLowerCased) match
-        case Some(user) if user.id != userId => Left(Fail.IncorrectInput(messageService.getMessage(LoginAlreadyUsed, userLanguage)))
+        case Some(user) if user.id != userId => Left(Fail.IncorrectInput(messageService.getMessage(LoginAlreadyUsed, lang)))
         case Some(user) if user.login == newLoginClean => Right(false)
         case _ =>
           either:
@@ -114,11 +118,11 @@ class UserService(
       end match
     end changeLogin
 
-    def validateLogin() = validateUserData(Some(newLoginClean))
+    def validateLogin() = validateUserData(Some(newLoginClean), languageOpt = Some(lang))
 
     def changeEmail(): Either[Fail, Boolean] =
       userModel.findByEmail(newEmailtoLowerCased) match
-        case Some(user) if user.id != userId => Left(Fail.IncorrectInput(messageService.getMessage(EmailAlreadyUsed, userLanguage)))
+        case Some(user) if user.id != userId => Left(Fail.IncorrectInput(messageService.getMessage(EmailAlreadyUsed, lang)))
         case Some(user) if user.emailLowerCase == newEmailtoLowerCased => Right(false)
         case _ =>
           either:
@@ -127,22 +131,32 @@ class UserService(
             userModel.updateEmail(userId, newEmailtoLowerCased)
             true
 
-    def validateEmail() = validateUserData(emailOpt = Some(newEmailtoLowerCased))
+    def validateEmail() = validateUserData(emailOpt = Some(newEmailtoLowerCased), languageOpt = Some(lang))
 
     def changeLanguage(): Either[Fail, Boolean] =
       language match
         case None => Right(false)
         case Some(lang) =>
           either:
-            validateLanguage().ok()
+            validateUserData(languageOpt = Some(lang)).ok()
             logger.debug(s"Changing language for user: $userId, to: $lang")
             userModel.updateLanguage(userId, lang)
             true
 
-    def validateLanguage() = 
-      language match
-        case Some(lang) if !LanguageContext.isSupported(lang) =>
-          Left(Fail.IncorrectInput(messageService.getMessage("user.error.unsupportedLanguage", userLanguage, lang)))
+    def changeUnitSystem(): Either[Fail, Boolean] =
+      unitSystem match
+        case None => Right(false)
+        case Some(units) =>
+          either:
+            validateUnitSystem().ok()
+            logger.debug(s"Changing unit system for user: $userId, to: $units")
+            userModel.updateUnitSystem(userId, units)
+            true
+
+    def validateUnitSystem() =
+      unitSystem match
+        case Some(units) if !List("metric", "imperial").contains(units) =>
+          Left(Fail.IncorrectInput(messageService.getMessage("user.error.unsupportedUnitSystem", lang, units)))
         case _ => Right(())
 
     def sendMail(user: User): Unit =
@@ -153,11 +167,12 @@ class UserService(
       val loginUpdated = changeLogin().ok()
       val emailUpdated = changeEmail().ok()
       val languageUpdated = changeLanguage().ok()
+      val unitSystemUpdated = changeUnitSystem().ok()
 
       // Update timezone if provided
       timezone.foreach(tz => userModel.updateTimezone(userId, tz))
 
-      val anyUpdate = loginUpdated || emailUpdated || languageUpdated || timezone.isDefined
+      val anyUpdate = loginUpdated || emailUpdated || languageUpdated || unitSystemUpdated || timezone.isDefined
       if anyUpdate then sendMail(findById(userId).ok())
   end changeUser
 
@@ -168,7 +183,7 @@ class UserService(
         _ <- verifyPassword(user, currentPassword, validationErrorMsg = "Incorrect current password")
       yield user
 
-    def validateNewPassword(): Either[Fail, Unit] = validateUserData(None, None, Some(newPassword))
+    def validateNewPassword(userLanguage: String): Either[Fail, Unit] = validateUserData(None, None, Some(newPassword), languageOpt = Some(userLanguage))
 
     def updateUserPassword(user: User, newPassword: String): Unit =
       logger.debug(s"Changing password for user: ${user.id}")
@@ -182,14 +197,14 @@ class UserService(
 
     either:
       val user = validateUserPassword(userId, currentPassword).ok()
-      validateNewPassword().ok()
+      validateNewPassword(user.language).ok()
       updateUserPassword(user, newPassword)
       invalidateKeysAndCreateNew(user)
   end changePassword
 
   private def userOrNotFound(u: Option[User]): Either[Fail, User] = u match
     case Some(user) => Right(user)
-    case None       => Left(Fail.Unauthorized(messageService.getMessage(IncorrectLoginOrPassword, "en")))
+    case None       => Left(Fail.Unauthorized(messageService.getMessage(IncorrectLoginOrPassword, DefaultLanguage)))
 
   private def verifyPassword(user: User, password: String, validationErrorMsg: String): Either[Fail, Unit] =
     if user.verifyPassword(password) == PasswordVerificationStatus.Verified then Right(()) else Left(Fail.Unauthorized(validationErrorMsg))
@@ -197,27 +212,35 @@ class UserService(
   private[user] def validateUserData(
     loginOpt: Option[String] = None, 
     emailOpt: Option[String] = None, 
-    passwordOpt: Option[String] = None
+    passwordOpt: Option[String] = None,
+    languageOpt: Option[String] = None
   ): Either[Fail, Unit] =
+    val userLanguage = languageOpt.getOrElse(DefaultLanguage)
     def validateLogin(loginOpt: Option[String]): Either[String, Unit] =
       loginOpt.map(_.trim) match
-        case Some(login) => if login.length >= MinLoginLength then ValidationOk else Left("Login is too short!")
+        case Some(login) => if login.length >= MinLoginLength then ValidationOk else Left(messageService.getMessage("user.error.loginTooShort", userLanguage))
         case None        => ValidationOk
 
     def validateEmail(emailOpt: Option[String]): Either[String, Unit] =
       emailOpt.map(_.trim) match
-        case Some(email) => if emailRegex.findFirstMatchIn(email).isDefined then ValidationOk else Left("Invalid e-mail format!")
+        case Some(email) => if emailRegex.findFirstMatchIn(email).isDefined then ValidationOk else Left(messageService.getMessage("user.error.invalidEmail", userLanguage))
         case None        => ValidationOk
 
     def validatePassword(passwordOpt: Option[String]): Either[String, Unit] =
       passwordOpt.map(_.trim) match
-        case Some(password) => if password.nonEmpty then ValidationOk else Left("Password cannot be empty!")
+        case Some(password) => if password.nonEmpty then ValidationOk else Left(messageService.getMessage("user.error.passwordEmpty", userLanguage))
         case None           => ValidationOk
+
+    def validateLanguage(languageOpt: Option[String]): Either[String, Unit] =
+      languageOpt match
+        case Some(lang) if !LanguageContext.isSupported(lang) => Left(messageService.getMessage("validation.unsupportedLanguage", userLanguage, lang, SupportedLanguages.mkString(", ")))
+        case _ => ValidationOk
 
     (for
       _ <- validateLogin(loginOpt)
       _ <- validateEmail(emailOpt)
       _ <- validatePassword(passwordOpt)
+      _ <- validateLanguage(languageOpt)
     yield ()).left.map(Fail.IncorrectInput(_))
 
   private val ValidationOk = Right(())
