@@ -1,21 +1,24 @@
 import * as Yup from 'yup';
 
-export const validationSchema = Yup.object({
+// Custom validation function that integrates with react-i18next
+const createValidationSchema = (t: (key: string) => string) => Yup.object({
   login: Yup.string()
-    .min(3, 'auth:register.errors.loginTooShort')
-    .required('validation:required'),
+    .min(3, t('auth:register.errors.loginTooShort'))
+    .required(t('validation:required')),
   email: Yup.string()
-    .email('auth:register.errors.invalidEmail')
-    .required('validation:required'),
+    .email(t('auth:register.errors.invalidEmail'))
+    .required(t('validation:required')),
   password: Yup.string()
-    .min(5, 'auth:register.errors.passwordTooShort')
-    .required('validation:required'),
+    .min(5, t('auth:register.errors.passwordTooShort'))
+    .required(t('validation:required')),
   repeatedPassword: Yup.string()
-    .oneOf([Yup.ref('password')], 'auth:register.errors.passwordsDoNotMatch')
-    .required('validation:required'),
+    .oneOf([Yup.ref('password')], t('auth:register.errors.passwordsDoNotMatch'))
+    .required(t('validation:required')),
   language: Yup.string()
-    .oneOf(['en', 'sl'], 'validation:invalidLanguage')
-    .required('validation:required'),
+    .oneOf(['en', 'sl'], t('validation:invalidLanguage'))
+    .required(t('validation:required')),
   timezone: Yup.string()
-    .required('validation:required'),
+    .required(t('validation:required')),
 });
+
+export { createValidationSchema };

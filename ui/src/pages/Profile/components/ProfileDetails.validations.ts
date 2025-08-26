@@ -1,18 +1,21 @@
 import * as Yup from 'yup';
 
-export const validationSchema = Yup.object({
+// Custom validation function that integrates with react-i18next
+const createValidationSchema = (t: (key: string) => string) => Yup.object({
   login: Yup.string()
-    .min(3, 'At least 3 characters required')
-    .required('Required'),
+    .min(3, t('validation:minLength'))
+    .required(t('validation:required')),
   email: Yup.string()
-    .email('Valid email address required')
-    .required('Required'),
+    .email(t('validation:invalidEmail'))
+    .required(t('validation:required')),
   language: Yup.string()
-    .oneOf(['en', 'sl'], 'Invalid language selection')
-    .required('Required'),
+    .oneOf(['en', 'sl'], t('validation:invalidLanguage'))
+    .required(t('validation:required')),
   timezone: Yup.string()
-    .required('Required'),
+    .required(t('validation:required')),
   unitSystem: Yup.string()
-    .oneOf(['metric', 'imperial'], 'Invalid units selection')
-    .required('Required'),
+    .oneOf(['metric', 'imperial'], t('validation:invalidUnitSystem'))
+    .required(t('validation:required')),
 });
+
+export { createValidationSchema };

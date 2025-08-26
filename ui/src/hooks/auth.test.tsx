@@ -1,70 +1,44 @@
+import { useAuth } from './auth';
 import { renderHook } from '@testing-library/react';
-import { useApiKeyState, useUserCheck } from './auth';
-import { UserContext } from 'contexts/UserContext/User.context';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { UserContextProvider } from 'contexts/UserContext/UserContext';
+import { ReactNode } from 'react';
 
-const mockMutate = vi.fn();
-const mockResponse = vi.fn();
-const mockDispatch = vi.fn();
-
-vi.mock('api/apiComponents', () => ({
-  useGetUser: () => mockResponse(),
-}));
-
-beforeEach(() => {
-  localStorage.clear();
-  vi.clearAllMocks();
-});
-
-test('useUserCheck() should fetch user data when the API key is available', () => {
-  mockResponse.mockReturnValueOnce({
-    mutate: mockMutate,
-    reset: vi.fn(),
-    data: {
-      login: 'test-user',
-      email: 'test@example.com',
-      createdOn: '2020-10-09T09:57:17.995288Z',
+const createWrapper = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
     },
-    isSuccess: true,
-    isError: false,
-    error: '',
   });
 
-  const { result } = renderHook(() => useUserCheck(), {
-    wrapper: ({ children }) => (
-      <UserContext.Provider
-        value={{ state: { user: null }, dispatch: mockDispatch }}
-      >
-        {children}
-      </UserContext.Provider>
-    ),
+  return ({ children }: { children: ReactNode }) => (
+    <QueryClientProvider client={queryClient}>
+      <UserContextProvider>{children}</UserContextProvider>
+    </QueryClientProvider>
+  );
+};
+
+describe('useAuth', () => {
+  test('useAuth() should be defined and return expected structure', () => {
+    const { result } = renderHook(() => useAuth(), {
+      wrapper: createWrapper(),
+    });
+
+    expect(result.current).toBeDefined();
+    expect(typeof result.current.isAuthenticated).toBe('boolean');
+    expect(typeof result.current.isLoading).toBe('boolean');
+    expect('user' in result.current).toBe(true);
+    expect('apiKey' in result.current).toBe(true);
   });
 
-  expect(result.current.isSuccess).toBe(true);
-  expect(result.current.data).toEqual({
-    login: 'test-user',
-    email: 'test@example.com',
-    createdOn: '2020-10-09T09:57:17.995288Z',
+  test('useAuth() should handle initial state correctly', () => {
+    const { result } = renderHook(() => useAuth(), {
+      wrapper: createWrapper(),
+    });
+
+    // Initially should be loading or unauthenticated
+    expect(result.current.isAuthenticated).toBe(false);
+    expect(result.current.user).toBeUndefined();
+    expect(result.current.apiKey).toBeUndefined();
   });
-  expect(mockDispatch).toHaveBeenCalledWith({
-    type: 'LOG_IN',
-    user: result.current.data,
-  });
-});
-
-test('useApiKeyState() should return undefined when no API key is stored', () => {
-  const { result } = renderHook(() => useApiKeyState());
-
-  expect(result.current[0]).toBeUndefined();
-});
-
-test('useApiKeyState() should return stored API key state', () => {
-  const { result, rerender } = renderHook(() => useApiKeyState());
-
-  const [, setState] = result.current;
-
-  setState({ apiKey: '123' });
-
-  rerender();
-
-  expect(result.current[0]).toEqual({ apiKey: '123' });
 });

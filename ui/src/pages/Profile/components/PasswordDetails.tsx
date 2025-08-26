@@ -7,13 +7,15 @@ import { Formik, Form as FormikForm } from 'formik';
 import * as Yup from 'yup';
 import { FormikInput, FeedbackButton } from 'components';
 import { usePostUserChangepassword } from 'api/apiComponents';
-import { validationSchema } from './PasswordDetails.validations';
+import { createValidationSchema } from './PasswordDetails.validations';
 import { useApiKeyState } from 'hooks/auth';
+import { useTranslation } from 'react-i18next';
 
-type PasswordDetailsParams = Yup.InferType<typeof validationSchema>;
+type PasswordDetailsParams = Yup.InferType<ReturnType<typeof createValidationSchema>>;
 
 export const PasswordDetails = () => {
   const [storageApiKeyState, setStorageApiKeyState] = useApiKeyState();
+  const { t } = useTranslation();
 
   const mutation = usePostUserChangepassword({
     onSuccess: ({ apiKey: newApiKey }) => {
@@ -41,7 +43,7 @@ export const PasswordDetails = () => {
                     body: values,
                   })
                 }
-                validationSchema={validationSchema}
+                validationSchema={createValidationSchema(t)}
               >
                 <Form as={FormikForm}>
                   <FormikInput

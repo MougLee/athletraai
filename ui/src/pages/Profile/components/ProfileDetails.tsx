@@ -8,14 +8,14 @@ import { Formik, Form as FormikForm } from 'formik';
 import * as Yup from 'yup';
 import { FormikInput, FeedbackButton } from 'components';
 import { usePostUser } from 'api/apiComponents';
-import { validationSchema } from './ProfileDetails.validations';
+import { createValidationSchema } from './ProfileDetails.validations';
 import { useUserContext } from 'contexts/UserContext/User.context';
 import { mapBackendUserToFrontend } from 'contexts/UserContext/UserContext';
 import { useTranslation } from 'react-i18next';
 import { PreferencesSection } from './PreferencesSection';
 import { detectBrowserTimezone } from '../../../utils/preferences';
 
-export type ProfileDetailsParams = Yup.InferType<typeof validationSchema>;
+export type ProfileDetailsParams = Yup.InferType<ReturnType<typeof createValidationSchema>>;
 
 export const ProfileDetails = () => {
   const {
@@ -51,7 +51,7 @@ export const ProfileDetails = () => {
                   unitSystem: (user.unitSystem as 'metric' | 'imperial') || 'metric',
                 }}
                 onSubmit={(values) => mutation.mutate({ body: values })}
-                validationSchema={validationSchema}
+                validationSchema={createValidationSchema(t)}
               >
                 <Form as={FormikForm}>
                   <h4 className="mb-3">{t('profile.personalInfo', { defaultValue: 'Personal Information' })}</h4>

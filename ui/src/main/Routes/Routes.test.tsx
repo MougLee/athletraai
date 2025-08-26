@@ -5,6 +5,14 @@ import { UserContext } from 'contexts/UserContext/User.context';
 import { initialUserState } from 'contexts/UserContext/UserContext.constants';
 import { renderWithClient } from 'tests';
 import { Routes } from './Routes';
+import { LanguageProvider } from 'contexts/LanguageContext';
+import { useAuth, useApiKeyState } from 'hooks/auth';
+
+// Mock the useAuth hook
+vi.mock('hooks/auth', () => ({
+  useAuth: vi.fn(),
+  useApiKeyState: vi.fn(),
+}));
 
 const loggedUserState: UserState = {
   user: {
@@ -18,14 +26,27 @@ const dispatch = vi.fn();
 
 beforeEach(() => {
   vi.clearAllMocks();
+  
+  // Set up default mocks
+  vi.mocked(useApiKeyState).mockReturnValue([null, vi.fn()]);
 });
 
 test('<Routes /> should render the main route', () => {
+  // Mock useAuth to return unauthenticated state
+  vi.mocked(useAuth).mockReturnValue({
+    isAuthenticated: false,
+    isLoading: false,
+    user: undefined,
+    apiKey: null,
+  });
+
   renderWithClient(
     <MemoryRouter initialEntries={['']}>
-      <UserContext.Provider value={{ state: initialUserState, dispatch }}>
-        <Routes />
-      </UserContext.Provider>
+      <LanguageProvider>
+        <UserContext.Provider value={{ state: initialUserState, dispatch }}>
+          <Routes />
+        </UserContext.Provider>
+      </LanguageProvider>
     </MemoryRouter>
   );
 
@@ -33,11 +54,21 @@ test('<Routes /> should render the main route', () => {
 });
 
 test('<Routes /> should render protected route for unlogged user', () => {
+  // Mock useAuth to return unauthenticated state
+  vi.mocked(useAuth).mockReturnValue({
+    isAuthenticated: false,
+    isLoading: false,
+    user: undefined,
+    apiKey: null,
+  });
+
   renderWithClient(
     <MemoryRouter initialEntries={['/main']}>
-      <UserContext.Provider value={{ state: initialUserState, dispatch }}>
-        <Routes />
-      </UserContext.Provider>
+      <LanguageProvider>
+        <UserContext.Provider value={{ state: initialUserState, dispatch }}>
+          <Routes />
+        </UserContext.Provider>
+      </LanguageProvider>
     </MemoryRouter>
   );
 
@@ -45,11 +76,21 @@ test('<Routes /> should render protected route for unlogged user', () => {
 });
 
 test('<Routes /> should render protected route for logged-in user', () => {
+  // Mock useAuth to return authenticated state
+  vi.mocked(useAuth).mockReturnValue({
+    isAuthenticated: true,
+    isLoading: false,
+    user: loggedUserState.user as any,
+    apiKey: 'test-api-key',
+  });
+
   renderWithClient(
     <MemoryRouter initialEntries={['/main']}>
-      <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
-        <Routes />
-      </UserContext.Provider>
+      <LanguageProvider>
+        <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
+          <Routes />
+        </UserContext.Provider>
+      </LanguageProvider>
     </MemoryRouter>
   );
 
@@ -59,11 +100,21 @@ test('<Routes /> should render protected route for logged-in user', () => {
 });
 
 test('<Routes /> should render not found page', () => {
+  // Mock useAuth to return authenticated state
+  vi.mocked(useAuth).mockReturnValue({
+    isAuthenticated: true,
+    isLoading: false,
+    user: loggedUserState.user as any,
+    apiKey: 'test-api-key',
+  });
+
   renderWithClient(
     <MemoryRouter initialEntries={['/not-specified-route']}>
-      <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
-        <Routes />
-      </UserContext.Provider>
+      <LanguageProvider>
+        <UserContext.Provider value={{ state: loggedUserState, dispatch }}>
+          <Routes />
+        </UserContext.Provider>
+      </LanguageProvider>
     </MemoryRouter>
   );
 

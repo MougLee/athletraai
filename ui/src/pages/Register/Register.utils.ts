@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { validationSchema } from './Register.validations';
+import { createValidationSchema } from './Register.validations';
 
 // Detect browser language and timezone
 const detectBrowserLanguage = (): 'en' | 'sl' => {
@@ -29,4 +29,4 @@ export const initialValues = {
   timezone: detectBrowserTimezone(),
 };
 
-export type RegisterParams = Yup.InferType<typeof validationSchema>;
+export type RegisterParams = Yup.InferType<ReturnType<typeof createValidationSchema>>;

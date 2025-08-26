@@ -4,13 +4,13 @@ import { BiLogInCircle } from 'react-icons/bi';
 import { Formik, Form as FormikForm } from 'formik';
 import * as Yup from 'yup';
 import { TwoColumnHero, FormikInput, FeedbackButton } from 'components';
-import { validationSchema } from './Login.validations';
+import { createValidationSchema } from './Login.validations';
 import { useApiKeyState, useAuth } from 'hooks/auth';
 import { usePostUserLogin } from 'api/apiComponents';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-export type LoginParams = Yup.InferType<typeof validationSchema>;
+export type LoginParams = Yup.InferType<ReturnType<typeof createValidationSchema>>;
 
 export const Login = () => {
   const [, setApiKeyState] = useApiKeyState();
@@ -23,6 +23,9 @@ export const Login = () => {
 
   // Get the intended destination from location state, or default to /main
   const from = (location.state as { from?: Location })?.from?.pathname || '/main';
+
+  // Create validation schema with translations
+  const validationSchema = createValidationSchema(t);
 
   const mutation = usePostUserLogin({
     onSuccess: ({ apiKey }) => {

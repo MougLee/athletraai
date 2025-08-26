@@ -1,6 +1,9 @@
 import * as Yup from 'yup';
 
-export const validationSchema = Yup.object({
-  loginOrEmail: Yup.string().required('auth:login.errors.loginRequired'),
-  password: Yup.string().required('auth:login.errors.passwordRequired'),
+// Custom validation function that integrates with react-i18next
+const createValidationSchema = (t: (key: string) => string) => Yup.object({
+  loginOrEmail: Yup.string().required(t('auth:login.errors.loginRequired')),
+  password: Yup.string().required(t('auth:login.errors.passwordRequired')),
 });
+
+export { createValidationSchema };

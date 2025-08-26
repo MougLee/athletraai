@@ -4,11 +4,12 @@ import { Formik, Form as FormikForm } from 'formik';
 import { useNavigate, useLocation } from 'react-router';
 import { TwoColumnHero, FormikInput, FeedbackButton } from 'components';
 import { usePostUserRegister } from 'api/apiComponents';
-import { validationSchema } from './Register.validations';
-import { initialValues, RegisterParams } from './Register.utils';
+import { createValidationSchema } from './Register.validations';
+import { initialValues } from './Register.utils';
 import { useApiKeyState, useAuth } from 'hooks/auth';
 import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
+import * as Yup from 'yup';
 
 export const Register = () => {
   const [, setApiKeyState] = useApiKeyState();
@@ -21,6 +22,12 @@ export const Register = () => {
 
   // Get the intended destination from location state, or default to /main
   const from = (location.state as { from?: Location })?.from?.pathname || '/main';
+
+  // Create validation schema with translations
+  const validationSchema = createValidationSchema(t);
+
+  // Define the form parameters type based on the validation schema
+  type RegisterParams = Yup.InferType<typeof validationSchema>;
 
   const mutation = usePostUserRegister({
     onSuccess: ({ apiKey }) => {

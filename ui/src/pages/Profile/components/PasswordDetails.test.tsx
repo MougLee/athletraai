@@ -5,6 +5,8 @@ import { UserContext } from 'contexts/UserContext/User.context';
 import { renderWithClient } from 'tests';
 import { PasswordDetails } from './PasswordDetails';
 import { Mock } from 'vitest';
+import { LanguageProvider } from 'contexts/LanguageContext';
+import { usePostUserChangepassword } from 'api/apiComponents';
 
 const mockState: UserState = {
   user: {
@@ -15,11 +17,30 @@ const mockState: UserState = {
 };
 const dispatch = vi.fn();
 const mockMutate = vi.fn();
-const mockResponse = vi.fn();
 
 vi.mock('api/apiComponents', () => ({
-  usePostUserChangepassword: () => mockResponse(),
+  usePostUserChangepassword: vi.fn(),
 }));
+
+// Mock the validation schema creation
+vi.mock('./PasswordDetails.validations', () => ({
+  createValidationSchema: vi.fn(() => ({
+    validate: vi.fn().mockResolvedValue(true),
+  })),
+}));
+
+// Helper function to create a complete mutation mock
+const createMutationMock = (overrides: any = {}) => ({
+  mutate: vi.fn(),
+  reset: vi.fn(),
+  data: undefined,
+  isSuccess: false,
+  isError: false,
+  isPending: false,
+  isIdle: true,
+  error: null,
+  ...overrides,
+});
 
 beforeEach(() => {
   localStorage.clear();
@@ -30,14 +51,16 @@ const setStorageApiKeyState = () =>
   localStorage.setItem('apiKey', '{ "apiKey": "test-api-key" }');
 
 const mockSuccessfulResponse = (apiKey = 'test-api-key') => {
-  return mockResponse.mockReturnValueOnce({
+  const mockMutation = createMutationMock({
     mutate: mockMutate,
-    reset: vi.fn(),
     data: { apiKey },
     isSuccess: true,
-    isError: false,
-    error: '',
+    isIdle: false,
   });
+  
+  (usePostUserChangepassword as any).mockReturnValue(mockMutation);
+  
+  return mockMutation;
 };
 
 const mockCustomSuccessfulResponse = (
@@ -52,26 +75,31 @@ const mockCustomSuccessfulResponse = (
       }
     });
 
-  const mutateToUse = onSuccess ? mockMutateWithCallback : mockMutate;
-
-  const mockResult = mockResponse.mockReturnValueOnce({
-    mutate: mutateToUse,
-    reset: vi.fn(),
+  const mockMutation = createMutationMock({
+    mutate: mockMutateWithCallback,
     data: { apiKey },
     isSuccess: true,
-    isError: false,
-    error: '',
+    isIdle: false,
   });
 
-  return { mockResult, mutate: mutateToUse };
+  (usePostUserChangepassword as any).mockReturnValue(mockMutation);
+
+  return { mockResult: mockMutation, mutate: mockMutateWithCallback };
 };
 
-test('<PasswordDetails /> should render a message about unavailable details when the API key is missing"', async () => {
-  renderWithClient(
+const createTestWrapper = (children: React.ReactNode) => (
+  <LanguageProvider>
     <UserContext.Provider value={{ state: mockState, dispatch }}>
-      <PasswordDetails />
+      {children}
     </UserContext.Provider>
-  );
+  </LanguageProvider>
+);
+
+test('<PasswordDetails /> should render a message about unavailable details when the API key is missing"', async () => {
+  // Mock the hook to return a basic mutation object
+  (usePostUserChangepassword as any).mockReturnValue(createMutationMock());
+
+  renderWithClient(createTestWrapper(<PasswordDetails />));
 
   expect(screen.getByText('Password details not available.')).toBeVisible();
 });
@@ -80,11 +108,7 @@ test('<PasswordDetails /> should render the form when the API key is available',
   setStorageApiKeyState();
   mockSuccessfulResponse();
 
-  renderWithClient(
-    <UserContext.Provider value={{ state: mockState, dispatch }}>
-      <PasswordDetails />
-    </UserContext.Provider>
-  );
+  renderWithClient(createTestWrapper(<PasswordDetails />));
 
   expect(screen.getByLabelText('Current password')).toBeVisible();
   expect(screen.getByLabelText('New password')).toBeVisible();
@@ -100,11 +124,7 @@ test('<PasswordDetails /> should successfully submit the form by clicking the su
     storageHandler
   );
 
-  renderWithClient(
-    <UserContext.Provider value={{ state: mockState, dispatch }}>
-      <PasswordDetails />
-    </UserContext.Provider>
-  );
+  renderWithClient(createTestWrapper(<PasswordDetails />));
 
   await userEvent.type(
     screen.getByLabelText('Current password'),
@@ -144,11 +164,7 @@ test('<PasswordDetails /> should successfully submit the form by pressing the En
     storageHandler
   );
 
-  renderWithClient(
-    <UserContext.Provider value={{ state: mockState, dispatch }}>
-      <PasswordDetails />
-    </UserContext.Provider>
-  );
+  renderWithClient(createTestWrapper(<PasswordDetails />));
 
   await userEvent.type(
     screen.getByLabelText('Current password'),
@@ -183,20 +199,18 @@ test('<PasswordDetails /> should successfully submit the form by pressing the En
 test('<PasswordDetails /> should display an error message when the API call fails', async () => {
   setStorageApiKeyState();
 
-  mockResponse.mockReturnValueOnce({
+  const mockMutation = createMutationMock({
     mutate: mockMutate,
-    reset: vi.fn(),
     data: { apiKey: 'test-api-key' },
     isSuccess: false,
     isError: true,
     error: 'Test error',
+    isIdle: false,
   });
 
-  renderWithClient(
-    <UserContext.Provider value={{ state: mockState, dispatch }}>
-      <PasswordDetails />
-    </UserContext.Provider>
-  );
+  (usePostUserChangepassword as any).mockReturnValue(mockMutation);
+
+  renderWithClient(createTestWrapper(<PasswordDetails />));
 
   await userEvent.type(
     screen.getByLabelText('Current password'),
