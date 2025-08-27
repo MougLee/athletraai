@@ -6,21 +6,25 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import enCommon from './locales/en/common.json';
 import enAuth from './locales/en/auth.json';
 import enValidation from './locales/en/validation.json';
+import enOnboarding from './locales/en/onboarding.json';
 
 import slCommon from './locales/sl/common.json';
 import slAuth from './locales/sl/auth.json';
 import slValidation from './locales/sl/validation.json';
+import slOnboarding from './locales/sl/onboarding.json';
 
 const resources = {
   en: {
     common: enCommon,
     auth: enAuth,
     validation: enValidation,
+    onboarding: enOnboarding,
   },
   sl: {
     common: slCommon,
     auth: slAuth,
     validation: slValidation,
+    onboarding: slOnboarding,
   },
 };
 
@@ -46,7 +50,7 @@ i18n
     },
 
     // Namespace options
-    ns: ['common', 'auth', 'validation'],
+    ns: ['common', 'auth', 'validation', 'onboarding'],
     defaultNS: 'common',
 
     // Pluralization rules

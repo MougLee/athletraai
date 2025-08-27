@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import { UserState } from 'contexts';
-import { UserContext } from 'contexts/UserContext/User.context';
+import { UserContext } from 'contexts/UserContext/UserContext';
 import { initialUserState } from 'contexts/UserContext/UserContext.constants';
 import { Top } from './Top';
 import { renderWithClient } from '../../tests';

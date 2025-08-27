@@ -3,7 +3,7 @@ import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 import { Link } from 'react-router';
 import { BiPowerOff, BiHappy } from 'react-icons/bi';
-import { useUserContext } from 'contexts/UserContext/User.context';
+import { useUserContext } from 'contexts/UserContext/UserContext';
 import { usePostUserLogout } from 'api/apiComponents';
 import { useApiKeyState } from 'hooks/auth';
 import { Button } from 'react-bootstrap';
@@ -55,6 +55,9 @@ export const Top = () => {
             </div>
             {user && apiKey ? (
               <>
+                <Nav.Link as={Link} to="/onboarding" className="text-lg-end">
+                  {t('navigation.onboarding')}
+                </Nav.Link>
                 <Nav.Link as={Link} to="/profile" className="text-lg-end">
                   <BiHappy />
                   &nbsp;{user?.login}

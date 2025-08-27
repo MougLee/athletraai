@@ -3,7 +3,7 @@ import { userEvent } from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import { renderWithClient } from 'tests';
 import { Register } from './Register';
-import { UserContext } from 'contexts/UserContext/User.context';
+import { UserContext } from 'contexts/UserContext/UserContext';
 import { initialUserState } from 'contexts/UserContext/UserContext.constants';
 import { usePostUserRegister, useGetUser } from 'api/apiComponents';
 import { LanguageProvider } from 'contexts/LanguageContext';

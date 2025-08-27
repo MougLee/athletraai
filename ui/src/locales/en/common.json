@@ -6,7 +6,8 @@
     "profile": "Profile",
     "logout": "Logout",
     "welcome": "Welcome",
-    "recoverPassword": "Recover Password"
+    "recoverPassword": "Recover Password",
+    "onboarding": "Onboarding"
   },
   "auth": {
     "pleaseSignIn": "Please sign in"

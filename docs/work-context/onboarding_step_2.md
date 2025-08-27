@@ -62,25 +62,27 @@ This document specifies **Step 2** of onboarding. It covers the **UI**, **localS
 }
 ```
 
-### Zod (example)
+### Yup (example)
 ```ts
-export const Step2Schema = z.object({
-  experienceLevel: z.enum(['novice','intermediate','advanced','expert']),
-  currentBuild: z.string().optional(),
-  hasConsistentTraining: z.boolean(),
-  inactivityDuration: z.string().optional().refine(
-    (v, ctx) => (ctx.parent?.hasConsistentTraining ? true : !!v),
-    { message: 'Select break length' }
-  ),
-  consistencyIssueTags: z.array(z.enum(['injury','time','life_events','motivation','other'])).optional(),
-  consistencyIssuesText: z.string().max(250).optional()
-}).refine(
-  (v) => {
-    if (v.consistencyIssuesText && !v.consistencyIssueTags?.includes('other')) return false;
-    return true;
-  },
-  { message: "Add 'Other' tag when providing custom reason.", path: ['consistencyIssueTags'] }
-);
+export const Step2Schema = yup.object({
+  experienceLevel: yup.string().oneOf(['novice','intermediate','advanced','expert']).required(),
+  currentBuild: yup.string().optional(),
+  hasConsistentTraining: yup.boolean().required(),
+  inactivityDuration: yup.string().when('hasConsistentTraining', {
+    is: false,
+    then: (schema) => schema.required('Select break length'),
+    otherwise: (schema) => schema.optional()
+  }),
+  consistencyIssueTags: yup.array().of(
+    yup.string().oneOf(['injury','time','life_events','motivation','other'])
+  ).optional(),
+  consistencyIssuesText: yup.string().max(250).optional()
+}).test('other-tag-required', "Add 'Other' tag when providing custom reason.", function(value) {
+  if (value.consistencyIssuesText && !value.consistencyIssueTags?.includes('other')) {
+    return false;
+  }
+  return true;
+});
 ```
 
 ---

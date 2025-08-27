@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import { UserState } from 'contexts';
-import { UserContext } from 'contexts/UserContext/User.context';
+import { UserContext } from 'contexts/UserContext/UserContext';
 import { renderWithClient } from 'tests';
 import { Profile } from './Profile';
 import { LanguageProvider } from 'contexts/LanguageContext';

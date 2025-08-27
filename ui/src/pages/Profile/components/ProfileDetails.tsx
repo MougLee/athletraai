@@ -9,7 +9,7 @@ import * as Yup from 'yup';
 import { FormikInput, FeedbackButton } from 'components';
 import { usePostUser } from 'api/apiComponents';
 import { createValidationSchema } from './ProfileDetails.validations';
-import { useUserContext } from 'contexts/UserContext/User.context';
+import { useUserContext } from 'contexts/UserContext/UserContext';
 import { mapBackendUserToFrontend } from 'contexts/UserContext/UserContext';
 import { useTranslation } from 'react-i18next';
 import { PreferencesSection } from './PreferencesSection';

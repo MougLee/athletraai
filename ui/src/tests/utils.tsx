@@ -5,15 +5,18 @@ import { I18nextProvider } from 'react-i18next';
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { LanguageProvider } from '../contexts/LanguageContext/LanguageContext';
+import { UserContextProvider } from '../contexts/UserContext/UserContext';
 
 // Import translation files
 import enCommon from '../locales/en/common.json';
 import enAuth from '../locales/en/auth.json';
 import enValidation from '../locales/en/validation.json';
+import enOnboarding from '../locales/en/onboarding.json';
 
 import slCommon from '../locales/sl/common.json';
 import slAuth from '../locales/sl/auth.json';
 import slValidation from '../locales/sl/validation.json';
+import slOnboarding from '../locales/sl/onboarding.json';
 
 // Create test-specific i18n instance
 const testI18n = i18next.createInstance();
@@ -26,11 +29,13 @@ testI18n
         common: enCommon,
         auth: enAuth,
         validation: enValidation,
+        onboarding: enOnboarding,
       },
       sl: {
         common: slCommon,
         auth: slAuth,
         validation: slValidation,
+        onboarding: slOnboarding,
       },
     },
     lng: 'en', // Force English for tests
@@ -39,7 +44,7 @@ testI18n
     interpolation: {
       escapeValue: false,
     },
-    ns: ['common', 'auth', 'validation'],
+    ns: ['common', 'auth', 'validation', 'onboarding'],
     defaultNS: 'common',
     react: {
       useSuspense: false,
@@ -68,6 +73,21 @@ export const renderWithClient = (
   <LanguageProvider>
     <I18nextProvider i18n={testI18n}>
       <QueryClientProvider client={client}>{ui}</QueryClientProvider>
+    </I18nextProvider>
+  </LanguageProvider>
+);
+
+export const renderWithProviders = (
+  ui: ReactElement,
+  client: QueryClient = defaultQueryClient
+) => render(
+  <LanguageProvider>
+    <I18nextProvider i18n={testI18n}>
+      <QueryClientProvider client={client}>
+        <UserContextProvider>
+          {ui}
+        </UserContextProvider>
+      </QueryClientProvider>
     </I18nextProvider>
   </LanguageProvider>
 );

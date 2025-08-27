@@ -1,6 +1,6 @@
 import { useLocalStorage } from '@uidotdev/usehooks';
 import { useGetUser } from 'api/apiComponents';
-import { useUserContext } from 'contexts/UserContext/User.context';
+import { useUserContext } from 'contexts/UserContext/UserContext';
 import { useEffect, useState } from 'react';
 import { STORAGE_API_KEY } from '../consts';
 import { useQueryClient } from '@tanstack/react-query';

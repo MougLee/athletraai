@@ -103,22 +103,25 @@ This document specifies **Step 1** of onboarding. It covers the **UI**, **localS
 - `ui/src/features/onboarding/validation.ts` — `Step1Schema` (Zod) for the fields above.
 - `ui/src/features/onboarding/store.ts` — get/merge/save to localStorage key.
 
-**Zod (example):**
+**Yup (example):**
 
 ```ts
-export const Step1Schema = z.object({
-  unitSystem: z.enum(['metric','imperial']),
-  date_of_birth: z.number().int().min(1900).max(new Date().getFullYear() - 8),
-  gender: z.enum(['male','female','na']),
-  activityLevel: z.enum(['sedentary','light','moderate','high','extreme']),
-  heightUnit: z.enum(['cm','in','ft_in']),
-  heightRaw: z.number().positive().optional(),
-  heightFtRaw: z.number().int().positive().optional(),
-  heightInRaw: z.number().positive().optional(),
-  weightRaw: z.number().positive().optional(),
-  weightUnit: z.enum(['kg','lb']).optional(),
-  timezone: z.string(),
-  language: z.string()
+export const Step1Schema = yup.object({
+  unitSystem: yup.string().oneOf(['metric','imperial']).required(),
+  dateOfBirth: yup.date()
+    .required()
+    .min(new Date(1930, 0, 1), 'Date must be after 1930')
+    .max(new Date(new Date().getFullYear() - 8, 11, 31), 'Date must be before {{year}}'),
+  gender: yup.string().oneOf(['male','female','na']).required(),
+  activityLevel: yup.string().oneOf(['sedentary','light','moderate','high','extreme']).required(),
+  heightUnit: yup.string().oneOf(['cm','in','ft_in']).required(),
+  heightRaw: yup.number().positive().nullable().optional(),
+  heightFtRaw: yup.number().integer().positive().nullable().optional(),
+  heightInRaw: yup.number().integer().positive().nullable().optional(),
+  weightRaw: yup.number().positive().nullable().optional(),
+  weightUnit: yup.string().oneOf(['kg','lb']).optional(),
+  timezone: yup.string().required(),
+  language: yup.string().required()
 });
 ```
 

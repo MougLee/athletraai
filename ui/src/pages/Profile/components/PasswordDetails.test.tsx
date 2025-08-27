@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { UserState } from 'contexts';
-import { UserContext } from 'contexts/UserContext/User.context';
+import { UserContext } from 'contexts/UserContext/UserContext';
 import { renderWithClient } from 'tests';
 import { PasswordDetails } from './PasswordDetails';
 import { Mock } from 'vitest';

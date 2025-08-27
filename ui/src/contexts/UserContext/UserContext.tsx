@@ -1,7 +1,6 @@
-import { ReactNode, useReducer } from 'react';
+import { ReactNode, useReducer, createContext, useContext } from 'react';
 import { produce } from 'immer';
 import { initialUserState } from './UserContext.constants';
-import { UserContext } from './User.context';
 
 export interface UserDetails {
   createdOn: string;
@@ -30,6 +29,18 @@ export type UserAction =
   | { type: 'UPDATE_USER_DATA'; user: Partial<UserDetails> }
   | { type: 'LOG_IN'; user: UserDetails }
   | { type: 'LOG_OUT' };
+
+// Create the context
+export const UserContext = createContext<{
+  state: UserState;
+  dispatch: React.Dispatch<UserAction>;
+}>({
+  state: initialUserState,
+  dispatch: () => {},
+});
+
+// Hook to use the context
+export const useUserContext = () => useContext(UserContext);
 
 const userReducer = (state: UserState, action: UserAction): UserState => {
   switch (action.type) {

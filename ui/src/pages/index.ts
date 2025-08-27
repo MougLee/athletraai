@@ -1,5 +1,6 @@
 export * from './Login/Login';
 export * from './NotFound/NotFound';
+export * from './Onboarding/Onboarding';
 export * from './Profile/Profile';
 export * from './RecoverLostPassword/RecoverLostPassword';
 export * from './Register/Register';

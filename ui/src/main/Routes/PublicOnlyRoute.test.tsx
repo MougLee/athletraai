@@ -1,4 +1,4 @@
-import { UserContext } from 'contexts/UserContext/User.context';
+import { UserContext } from 'contexts/UserContext/UserContext';
 import { initialUserState } from 'contexts/UserContext/UserContext.constants';
 import { Login } from 'pages';
 import { MemoryRouter, Route, Routes } from 'react-router';

@@ -1,0 +1,110 @@
+{
+  "validation": {
+    "required": "This field is required",
+    "invalidDate": "Please select a valid date",
+    "dateTooOld": "Date must be after 1930",
+    "dateTooYoung": "Date must be before {{year}}",
+    "positiveNumber": "Must be a positive number",
+    "integerOnly": "Must be a whole number",
+    "heightOutOfRange": "Height must be between 100 and 230 cm",
+    "heightOutOfRangeImperial": "Height must be between 1 and 10 ft",
+    "weightOutOfRange": "Weight must be between 20 and 500 kg",
+    "selectBreakLength": "Select break length",
+    "addOtherTag": "Add 'Other' tag when providing custom reason"
+  },
+  "step1": {
+    "title": "Personal info",
+    "subtitle": "We'll use this to tailor training targets and track progress. You can change it later.",
+    "successMessage": "Your personal information has been saved successfully!",
+    "units": {
+      "label": "Units",
+      "metric": "Metric",
+      "imperial": "Imperial"
+    },
+    "height": {
+      "label": "Height",
+      "metric": "Height (cm)",
+      "imperial": "Height (ft)",
+      "imperialInches": "Height (in)",
+      "placeholder": "Enter height"
+    },
+    "weight": {
+      "label": "Weight",
+      "metric": "Weight (kg)",
+      "imperial": "Weight (lb)",
+      "placeholder": "Enter weight",
+      "baseline": "Baseline weight for tracking progress"
+    },
+    "dateOfBirth": {
+      "label": "Date of birth",
+      "placeholder": "Select date"
+    },
+    "gender": {
+      "label": "Gender",
+      "male": "Male",
+      "female": "Female",
+      "preferNotToSay": "Prefer not to say"
+    },
+    "activityLevel": {
+      "label": "Activity level",
+      "sedentary": "Sedentary",
+      "sedentaryDescription": "Little to no exercise",
+      "light": "Light",
+      "lightDescription": "Light exercise / some walking",
+      "moderate": "Moderate",
+      "moderateDescription": "Moderate exercise or active job",
+      "high": "High",
+      "highDescription": "Hard exercise or physical job",
+      "extreme": "Extreme",
+      "extremeDescription": "Very intense training or highly physical job"
+    }
+  },
+  "step2": {
+    "title": "Fitness background",
+    "subtitle": "This helps us choose a safe starting point and progress pace.",
+    "experienceLevel": {
+      "label": "Experience level",
+      "novice": "Novice",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced",
+      "expert": "Expert"
+    },
+    "bodyDescription": {
+      "label": "Body description",
+      "placeholder": "Select description",
+      "athletic": "Athletic",
+      "average": "Average",
+      "carryingExtraWeight": "Carrying extra weight",
+      "rebuildingFitness": "Rebuilding fitness",
+      "preferNotToSay": "Prefer not to say"
+    },
+    "consistency": {
+      "label": "Structure & consistency in the last year",
+      "veryStructured": "Very structured & consistent",
+      "somewhatStructured": "Somewhat structured & consistent",
+      "irregular": "Irregular & unstructured",
+      "notTraining": "Not training consistently"
+    },
+    "breakLength": {
+      "label": "Break length",
+      "lessThan3Months": "Less than 3 months",
+      "3to6Months": "3–6 months",
+      "6to12Months": "6–12 months",
+      "over12Months": "Over 12 months"
+    },
+    "breakReasons": {
+      "label": "What caused your break?",
+      "injury": "Injury",
+      "time": "Time constraints",
+      "lifeEvents": "Life events",
+      "motivation": "Motivation",
+      "other": "Other",
+            "otherPlaceholder": "Please specify..."
+    }
+  },
+  "navigation": {
+    "next": "Next",
+    "back": "Back",
+    "skip": "Skip for now"
+  }
+}

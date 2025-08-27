@@ -6,7 +6,8 @@
     "profile": "Profil",
     "logout": "Odjava",
     "welcome": "Dobrodošli",
-    "recoverPassword": "Obnovi geslo"
+    "recoverPassword": "Obnovi geslo",
+    "onboarding": "Uvod"
   },
   "auth": {
     "pleaseSignIn": "Prosimo, prijavite se"

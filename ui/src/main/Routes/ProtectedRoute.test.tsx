@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router';
-import { UserContext } from 'contexts/UserContext/User.context';
+import { UserContext } from 'contexts/UserContext/UserContext';
 import { initialUserState } from 'contexts/UserContext/UserContext.constants';
 import { renderWithClient } from 'tests';
 import { Login } from 'pages';

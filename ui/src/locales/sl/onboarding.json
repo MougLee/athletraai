@@ -1,0 +1,110 @@
+{
+  "validation": {
+    "required": "To polje je obvezno",
+    "invalidDate": "Prosimo izberite veljaven datum",
+    "dateTooOld": "Datum mora biti po letu 1930",
+    "dateTooYoung": "Datum mora biti pred letom {{year}}",
+    "positiveNumber": "Mora biti pozitivno število",
+    "integerOnly": "Mora biti celo število",
+    "heightOutOfRange": "Višina mora biti med 100 in 230 cm",
+    "heightOutOfRangeImperial": "Višina mora biti med 1 in 10 ft",
+    "weightOutOfRange": "Teža mora biti med 20 in 500 kg",
+    "selectBreakLength": "Izberite dolžino prekida",
+    "addOtherTag": "Dodajte oznako 'Drugo' pri podajanju prilagojenega razloga"
+  },
+  "step1": {
+    "title": "Osebni podatki",
+    "subtitle": "Uporabili jih bomo za prilagoditev ciljev treninga in spremljanje napredka. Kasneje jih lahko spremenite.",
+    "successMessage": "Vaši osebni podatki so bili uspešno shranjeni!",
+    "units": {
+      "label": "Enota",
+      "metric": "Metrični",
+      "imperial": "Imperialni"
+    },
+    "height": {
+      "label": "Višina",
+      "metric": "Višina (cm)",
+      "imperial": "Višina (ft)",
+      "imperialInches": "Višina (in)",
+      "placeholder": "Vnesite višino"
+    },
+    "weight": {
+      "label": "Teža",
+      "metric": "Teža (kg)",
+      "imperial": "Teža (lb)",
+      "placeholder": "Vnesite težo",
+      "baseline": "Osnovna teža za spremljanje napredka"
+    },
+    "dateOfBirth": {
+      "label": "Datum rojstva",
+      "placeholder": "Izberite datum"
+    },
+    "gender": {
+      "label": "Spol",
+      "male": "Moški",
+      "female": "Ženska",
+      "preferNotToSay": "Raje ne povem"
+    },
+    "activityLevel": {
+      "label": "Raven aktivnosti",
+      "sedentary": "Sedeči",
+      "sedentaryDescription": "Malo ali nič vadbe",
+      "light": "Lahka",
+      "lightDescription": "Lahka vadba / nekaj hoje",
+      "moderate": "Zmerna",
+      "moderateDescription": "Zmerna vadba ali aktivno delo",
+      "high": "Visoka",
+      "highDescription": "Težka vadba ali fizično delo",
+      "extreme": "Ekstremna",
+      "extremeDescription": "Zelo intenzivna vadba ali visoko fizično delo"
+    }
+  },
+  "step2": {
+    "title": "Fitnes ozadje",
+    "subtitle": "To nam pomaga izbrati varno izhodišče in tempo napredka.",
+    "experienceLevel": {
+      "label": "Raven izkušenj",
+      "novice": "Začetnik",
+      "intermediate": "Srednji",
+      "advanced": "Napredni",
+      "expert": "Strokovnjak"
+    },
+    "bodyDescription": {
+      "label": "Opis telesa",
+      "placeholder": "Izberite opis",
+      "athletic": "Atletsko",
+      "average": "Povprečno",
+      "carryingExtraWeight": "Nosi dodatno težo",
+      "rebuildingFitness": "Obnavlja fitnes",
+      "preferNotToSay": "Raje ne povem"
+    },
+    "consistency": {
+      "label": "Struktura in konsistentnost v zadnjem letu",
+      "veryStructured": "Zelo strukturirano in konsistentno",
+      "somewhatStructured": "Nekoliko strukturirano in konsistentno",
+      "irregular": "Nepravilno in nestrukturirano",
+      "notTraining": "Ne trenira konsistentno"
+    },
+    "breakLength": {
+      "label": "Dolžina prekinitve",
+      "lessThan3Months": "Manj kot 3 mesece",
+      "3to6Months": "3–6 mesecev",
+      "6to12Months": "6–12 mesecev",
+      "over12Months": "Več kot 12 mesecev"
+    },
+    "breakReasons": {
+      "label": "Kaj je povzročilo prekinitev?",
+      "injury": "Poškodba",
+      "time": "Časovne omejitve",
+      "lifeEvents": "Življenjski dogodki",
+      "motivation": "Motivacija",
+      "other": "Drugo",
+      "otherPlaceholder": "Prosimo določite..."
+    }
+  },
+  "navigation": {
+    "next": "Naprej",
+    "back": "Nazaj",
+    "skip": "Preskoči za zdaj"
+  }
+}

@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
 import { UserContextProvider } from './UserContext';
-import { useUserContext } from './User.context';
+import { useUserContext } from './UserContext';
 
 test('useUserContext() should handle actions and state updates correctly', () => {
   const hook = renderHook(() => useUserContext(), {
